@@ -16,3 +16,5 @@ CS310 Project
 
   4. gamify training app, (can be merge with 1 and 3)
 
+  5. app for users to discover and cook classic recipes with slideshows or video demonstrations. Users can also share their own recipes, creating a community where everyone can learn and explore new culinary ideas together.
+
