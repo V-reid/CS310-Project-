@@ -7,3 +7,5 @@ CS310 Project
 2.gamify time management app
 
 3.app for the management of members a sport association
+
+4. gamify training app, (can be merge with 1 and 3)
