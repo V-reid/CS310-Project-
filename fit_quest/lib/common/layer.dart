@@ -6,12 +6,14 @@ Widget pageLayer({
   required BuildContext context,
   required String pageName,
   required Widget body,
-  FloatingActionButton? floatingActionButton,
+  Widget? floatingActionButton,
+  FloatingActionButtonLocation? floatingActionButtonLocation,
 }) {
   return Scaffold(
     appBar: Common.appBar(pageName),
     bottomNavigationBar: navigationBar(context),
     body: body,
+    floatingActionButtonLocation: floatingActionButtonLocation,
     floatingActionButton: floatingActionButton,
   );
 }

@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      initialRoute: "/login",
+      initialRoute: "/",
       debugShowCheckedModeBanner: false,
 
       theme: ThemeData(
@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
           }),
         ),
       ),
+
       routes: {
         "/login": (context) => LoginPage(),
         "/signup": (context) => SignUpPage(),

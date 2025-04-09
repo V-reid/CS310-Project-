@@ -13,13 +13,13 @@ const iconColor = Colors.white;
 
 const Map<String, NavigationDestination> destinations = {
   "/quests": NavigationDestination(
-    selectedIcon: Icon(Icons.emoji_events),
+    selectedIcon: Icon(Icons.emoji_events, color: iconColor),
     icon: Icon(Icons.emoji_events, color: iconColor),
     label: 'Quests',
   ),
 
   "/mockup": NavigationDestination(
-    selectedIcon: Icon(Icons.fitness_center),
+    selectedIcon: Icon(Icons.fitness_center, color: iconColor),
     icon: Icon(Icons.fitness_center, color: iconColor),
     label: 'Mockup',
   ),
@@ -31,13 +31,13 @@ const Map<String, NavigationDestination> destinations = {
   ),
 
   "/schedule": NavigationDestination(
-    selectedIcon: Icon(Icons.today),
+    selectedIcon: Icon(Icons.today, color: iconColor),
     icon: Icon(Icons.today, color: iconColor),
     label: 'Schedule',
   ),
 
   "/profile": NavigationDestination(
-    selectedIcon: Icon(Icons.account_circle, color: UI.primary),
+    selectedIcon: Icon(Icons.account_circle, color: iconColor),
     icon: Icon(Icons.account_circle, color: iconColor),
     label: 'Profile',
   ),
@@ -45,8 +45,8 @@ const Map<String, NavigationDestination> destinations = {
 
 NavigationBar navigationBar(BuildContext context) {
   String? name = ModalRoute.of(context)?.settings.name;
-  String? b = "/${name?.split("/")[1]}";
-  int currentDest = destinations.keys.toList().indexOf(b ?? "/");
+  String? currentRoute = "/${name?.split("/")[1]}";
+  int currentDest = destinations.keys.toList().indexOf(currentRoute ?? "/");
   return NavigationBar(
     backgroundColor: Colors.black,
     selectedIndex: currentDest < 0 ? 0 : currentDest,
