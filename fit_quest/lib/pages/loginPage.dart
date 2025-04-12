@@ -2,6 +2,8 @@ import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -25,13 +27,13 @@ class _LoginPageState extends State<LoginPage> {
           onPressed: () {
             Navigator.pushReplacementNamed(context, "/");
           },
-          text: "Link Start",
+          text: "Login",
           textColor: Colors.white,
         ),
         Inputs.formButton(
           state: _formKey.currentState,
           onPressed: () => Navigator.pushReplacementNamed(context, "/signup"),
-          text: "Sign up",
+          text: "Sign Up",
           isPrimary: false,
         ),
       ],
@@ -87,10 +89,12 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         padding: UI.padx(40),
         child: Center(
+          // add image here
           child: Column(
             spacing: 20,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              SvgPicture.asset('assets/fit_quest_logo.svg',),
               Text("FitQuest", style: TextStyle(fontSize: 24)),
               form(),
               actions(),
