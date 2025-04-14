@@ -26,6 +26,20 @@ class UI {
   static EdgeInsets pady(double val) => EdgeInsets.fromLTRB(0, val, 0, val);
   static EdgeInsets padxy(double x, double y) =>
       EdgeInsets.fromLTRB(x, y, x, y);
+
+  static boxShadow({
+    Color? color,
+    double spread = 5,
+    double blur = 7,
+    Offset? offset,
+  }) {
+    return BoxShadow(
+      color: color ?? Colors.grey.withValues(alpha: 0.5),
+      spreadRadius: spread,
+      blurRadius: blur,
+      offset: offset ?? Offset(0, 3), // changes position of shadow
+    );
+  }
 }
 
 class Common {
@@ -44,29 +58,89 @@ class Common {
     );
   }
 
-  static Widget imageWithOverlay({
-    required double width,
-    required double height,
-    required ImageProvider<Object> image,
-    Color overlayColor = Colors.black38,
-    BoxFit fit = BoxFit.cover,
-    BorderRadiusGeometry borderRadius = UI.borderRadius,
-    BlendMode blend = BlendMode.darken,
-    Widget? child,
+  static Widget sectionName({
+    required String title,
+    List<int> flexs = const [0, 4, 10],
   }) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: image,
-          fit: fit,
-          colorFilter: ColorFilter.mode(overlayColor, blend),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          flex: flexs[0],
+          child: Container(height: 3, width: 20, color: Colors.black),
         ),
-        borderRadius: borderRadius,
-        border: Border.all(color: Colors.grey, width: 1),
+        Expanded(
+          flex: flexs[1],
+          child: Center(child: Common.title(data: title, fontSize: 16)),
+        ),
+        Expanded(
+          flex: flexs[2],
+          child: Container(height: 3, width: 20, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  static Widget progressBar({
+    required double current,
+    required double max,
+    double? width,
+    double? height,
+    Color background = UI.accent,
+    Color fill = Colors.lightGreen,
+    bool withText = true,
+    double right = 50,
+  }) {
+    double perc = current / max * (width ?? 1);
+    String health = "${current.toInt()}/${max.toInt()}";
+    double minHeight = height == null || height > 16 ? 16 : height;
+    return Container(
+      decoration: BoxDecoration(borderRadius: UI.borderRadius),
+      clipBehavior: Clip.hardEdge,
+      child: Stack(
+        children: [
+          Container(width: width, height: height, color: background),
+          Container(width: perc, height: height, color: fill),
+          withText
+              ? Positioned(
+                right: right,
+                child: Text(
+                  health,
+                  style: TextStyle(fontSize: minHeight),
+                  textAlign: TextAlign.center,
+                ),
+              )
+              : Container(),
+        ],
       ),
-      child: child,
+    );
+  }
+
+  static Widget Grid<T>({
+    required List<T> items,
+    required Widget toElement(T),
+    int col = 2,
+    double spacing = 20,
+  }) {
+    return Column(
+      spacing: 20,
+      children: [
+        for (int i = 0; i <= items.length; i += col)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: spacing,
+            children:
+                items
+                    .where(
+                      (x) =>
+                          items.indexOf(x) >= i &&
+                          items.indexOf(x) <= i + (col - 1),
+                    )
+                    .map(toElement)
+                    .toList(),
+          ),
+      ],
     );
   }
 
@@ -89,6 +163,25 @@ class Common {
     );
   }
 
+  static List<String> days = ["M", "Tu", "W", "Th", "F", "Sa", "Su"];
+  static Widget dayButton({required String text, void Function()? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        // width: 30,
+        padding: UI.padxy(10, 5),
+        // color: UI.accent,
+        decoration: BoxDecoration(
+          color: UI.accent,
+
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+
+        child: Center(child: Text(text, style: TextStyle(color: Colors.black))),
+      ),
+    );
+  }
+
   static Widget text({
     required String data,
     FontWeight weight = FontWeight.normal,
@@ -106,20 +199,6 @@ class Common {
         color: color,
         fontFamily: fontFamily,
       ),
-    );
-  }
-
-  static boxShadow({
-    Color? color,
-    double spread = 5,
-    double blur = 7,
-    Offset? offset,
-  }) {
-    return BoxShadow(
-      color: color ?? Colors.grey.withValues(alpha: 0.5),
-      spreadRadius: spread,
-      blurRadius: blur,
-      offset: offset ?? Offset(0, 3), // changes position of shadow
     );
   }
 

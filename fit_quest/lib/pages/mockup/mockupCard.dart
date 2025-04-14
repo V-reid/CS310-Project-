@@ -1,4 +1,5 @@
 import 'package:fit_quest/common/common.dart';
+import 'package:fit_quest/pages/mockup/components.dart';
 import 'package:flutter/material.dart';
 
 enum Difficulty { easy, medium, hard }
@@ -74,21 +75,21 @@ class MockupCard extends StatelessWidget {
         color: UI.accent,
         boxShadow: [
           mostPopular
-              ? Common.boxShadow(
+              ? UI.boxShadow(
                 spread: 3,
                 blur: 0,
                 color: UI.primary.withValues(alpha: 1),
                 offset: Offset(0, 0),
               )
               : BoxShadow(),
-          Common.boxShadow(),
+          UI.boxShadow(),
         ],
         borderRadius: UI.borderRadius,
       ),
       child: Row(
         children: [
           image != null
-              ? Common.imageWithOverlay(
+              ? imageWithOverlay(
                 width: width / 1.8,
                 height: height,
                 image: AssetImage(image!),

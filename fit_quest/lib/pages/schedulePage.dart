@@ -15,25 +15,33 @@ class _SchedulePageState extends State<SchedulePage> {
     return pageLayer(
       context: context,
       pageName: "SCHEDULE",
+      body: SingleChildScrollView(
+        child: Column(
+          spacing: 60,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children:
+                  Common.days.map((x) => Common.dayButton(text: x)).toList(),
+            ),
+            Column(
+              spacing: 20,
+              children: [
+                Text("START NOW!", style: TextStyle(fontSize: 20)),
+                ElevatedButton(
+                  onPressed: () => {},
+                  child: Icon(Icons.add, size: 30),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => {},
-        tooltip: 'Filter',
+        tooltip: 'Increment',
         backgroundColor: UI.accent,
         child: const Icon(Icons.filter_alt),
-      ),
-      body: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              MaterialButton(
-                onPressed: () {},
-                child: Text("M", style: TextStyle(fontSize: 10)),
-                // style: ButtonStyle(),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

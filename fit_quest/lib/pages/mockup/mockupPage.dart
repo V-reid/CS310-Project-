@@ -2,7 +2,7 @@ import 'package:fit_quest/common/layer.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/common.dart';
-import 'components/mockupCard.dart';
+import 'mockupCard.dart';
 
 const mockups = [
   MockupCard(

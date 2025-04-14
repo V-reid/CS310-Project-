@@ -1,14 +1,14 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/layer.dart';
 import 'package:fit_quest/pages/campaignPage.dart';
-import 'package:fit_quest/pages/dailyPage.dart';
+import 'package:fit_quest/pages/schedulePage.dart';
 import 'package:fit_quest/pages/fightPage.dart';
 import 'package:fit_quest/pages/homePage.dart';
 import 'package:fit_quest/pages/loginPage.dart';
 import 'package:fit_quest/pages/mockup/mockupPage.dart';
 import 'package:fit_quest/pages/mockup/singleMockup.dart';
-import 'package:fit_quest/pages/profilePage.dart';
-import 'package:fit_quest/pages/schedulePage.dart';
+import 'package:fit_quest/pages/profile/profilePage.dart';
+import 'package:fit_quest/pages/quests/questPage.dart';
 import 'package:fit_quest/pages/signUpPage.dart';
 import 'package:flutter/material.dart';
 
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         "/schedule": (context) => SchedulePage(),
         "/campaign": (context) => CampaignPage(),
         "/fight": (context) => FightPage(),
-        "/quests": (context) => DailyPage(),
+        "/quests": (context) => QuestsPage(),
       },
     );
   }

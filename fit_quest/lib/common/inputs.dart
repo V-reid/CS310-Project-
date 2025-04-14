@@ -51,7 +51,6 @@ class Inputs {
       fillColor: Colors.white,
       filled: true,
       label: SizedBox(
-        width: 120,
         child: Row(
           children: [
             Icon(icon),

@@ -1,6 +1,6 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/layer.dart';
-import 'package:fit_quest/pages/mockup/components/mockupCard.dart';
+import 'package:fit_quest/pages/mockup/mockupCard.dart';
 import 'package:fit_quest/pages/mockup/mockupPage.dart';
 import 'package:flutter/material.dart';
 
