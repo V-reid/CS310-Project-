@@ -11,6 +11,9 @@ class UI {
   static const Color secondary = Colors.black38;
   static const Color accent = Color.fromARGB(255, 214, 214, 214);
   static const Color background = Colors.white;
+  static const Color walkCardColor = Colors.cyanAccent;
+  static const Color activeTimeCardColor = Colors.yellowAccent;
+  static const Color questProgressCardColor = Colors.purpleAccent;
 
   static const BorderRadiusGeometry borderRadius = BorderRadius.all(
     Radius.circular(20),

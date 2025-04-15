@@ -74,7 +74,7 @@ class Validators {
         return "This field is required";
       }
       if (!EmailValidator.validate(value)) {
-        return "not validate email";
+        return "Invalid email";
       }
     }
   };

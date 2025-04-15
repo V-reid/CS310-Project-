@@ -1,15 +1,7 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/layer.dart';
-import 'package:fit_quest/pages/campaignPage.dart';
-import 'package:fit_quest/pages/schedulePage.dart';
-import 'package:fit_quest/pages/fightPage.dart';
-import 'package:fit_quest/pages/homePage.dart';
-import 'package:fit_quest/pages/loginPage.dart';
-import 'package:fit_quest/pages/mockup/mockupPage.dart';
-import 'package:fit_quest/pages/mockup/singleMockup.dart';
-import 'package:fit_quest/pages/profile/profilePage.dart';
-import 'package:fit_quest/pages/quests/questPage.dart';
-import 'package:fit_quest/pages/signUpPage.dart';
+// If adding new pages, add it to allPages.dart instead, to save on clutter.
+import 'package:fit_quest/pages/allPages.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,9 +15,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      initialRoute: "/",
+      // Requirement 1: Named Routes
+      initialRoute: "/login",
       debugShowCheckedModeBanner: false,
 
+      // Requirement 4: Custom Font
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         fontFamily: "Pokemon",
@@ -37,6 +31,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
 
+      // Requirement 1: Named Routes
       routes: {
         "/login": (context) => LoginPage(),
         "/signup": (context) => SignUpPage(),

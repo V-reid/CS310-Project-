@@ -12,7 +12,7 @@ const mockups = [
     kcalBurn: 1500,
     image: "assets/saitama.jpg",
     mostPopular: true,
-    excercise: {
+    exercise: {
       "Pushup": "100",
       "Sits-up": "100",
       "Squats": "100",
@@ -26,7 +26,7 @@ const mockups = [
     level: Difficulty.medium,
     kcalBurn: 500,
     image: "assets/rocky.jpg",
-    excercise: {"jump": "3x10", "run": "4km", "tricept extensions": "3x10"},
+    exercise: {"jump": "3x10", "run": "4km", "tricept extensions": "3x10"},
   ),
   MockupCard(
     name: "Yusuf Dikec Training",
@@ -34,7 +34,7 @@ const mockups = [
     level: Difficulty.easy,
     kcalBurn: 145,
     image: "assets/yusuf.webp",
-    excercise: {
+    exercise: {
       "Pushup": "100",
       "Sits-up": "100",
       "Squats": "100",
