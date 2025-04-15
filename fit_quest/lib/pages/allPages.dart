@@ -1,7 +1,7 @@
 export 'campaignPage.dart';
 export 'dailyPage.dart';
 export 'fightPage.dart';
-export 'homePage.dart';
+export 'home/homePage.dart';
 export 'loginPage.dart';
 export 'mockup/mockupPage.dart';
 export 'mockup/singleMockup.dart';
