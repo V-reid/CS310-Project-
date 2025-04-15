@@ -45,7 +45,7 @@ class MockupCard extends StatelessWidget {
     required this.level,
     required this.kcalBurn,
     this.mostPopular = false,
-    this.excercise,
+    this.exercise,
     this.rewards,
     this.image,
   });
@@ -56,7 +56,7 @@ class MockupCard extends StatelessWidget {
   final double kcalBurn;
   final bool mostPopular;
   final String? image;
-  final Map<String, String>? excercise;
+  final Map<String, String>? exercise;
   final Map<String, String>? rewards;
 
   final double width = 350;

@@ -11,10 +11,10 @@ class SingleMockup extends StatefulWidget {
   _SingleMockupState createState() => _SingleMockupState();
 }
 
-List<Widget> getExcersice(MockupCard mockup) {
-  return mockup.excercise == null
-      ? [Text("No Excercise")]
-      : mockup.excercise!.keys
+List<Widget> getExercise(MockupCard mockup) {
+  return mockup.exercise == null
+      ? [Text("No Exercise")]
+      : mockup.exercise!.keys
           .map(
             (x) => Row(
               spacing: 5,
@@ -22,14 +22,14 @@ List<Widget> getExcersice(MockupCard mockup) {
               children: [
                 roundedContainer(width: 20, height: 20),
                 roundedContainer(width: 150, height: 20, child: Text(x)),
-                roundedContainer(child: Text(mockup.excercise?[x] ?? "")),
+                roundedContainer(child: Text(mockup.exercise?[x] ?? "")),
               ],
             ),
           )
           .toList();
 }
 
-List<Widget> getRedwards(MockupCard mockup) {
+List<Widget> getRewards(MockupCard mockup) {
   return mockup.rewards == null
       ? [Text("No rewards")]
       : mockup.rewards!.keys
@@ -53,9 +53,9 @@ List<Widget> getRedwards(MockupCard mockup) {
 }
 
 class _SingleMockupState extends State<SingleMockup> {
-  bool beign = false;
+  bool begin = false;
 
-  Widget excerciseWidget(MockupCard mockup) {
+  Widget exerciseWidget(MockupCard mockup) {
     return Container(
       width: 300,
       padding: UI.padxy(20, 20),
@@ -65,7 +65,7 @@ class _SingleMockupState extends State<SingleMockup> {
       ),
       child: Column(
         spacing: 20,
-        children: [Text("Plan"), ...getExcersice(mockup)],
+        children: [Text("Plan"), ...getExercise(mockup)],
       ),
     );
   }
@@ -80,7 +80,7 @@ class _SingleMockupState extends State<SingleMockup> {
       ),
       child: Column(
         spacing: 20,
-        children: [Text("Redwars"), ...getRedwards(mockup)],
+        children: [Text("Redwars"), ...getRewards(mockup)],
       ),
     );
   }
@@ -90,7 +90,7 @@ class _SingleMockupState extends State<SingleMockup> {
       spacing: 10,
       mainAxisAlignment: MainAxisAlignment.center,
       children:
-          beign
+          begin
               ? [
                 ElevatedButton(
                   onPressed: () => {},
@@ -102,7 +102,7 @@ class _SingleMockupState extends State<SingleMockup> {
                 ElevatedButton(
                   onPressed:
                       () => setState(() {
-                        beign = false;
+                        begin = false;
                       }),
 
                   style: ButtonStyle(
@@ -123,7 +123,7 @@ class _SingleMockupState extends State<SingleMockup> {
                 ElevatedButton(
                   onPressed:
                       () => setState(() {
-                        beign = true;
+                        begin = true;
                       }),
                   child: Text("Begin", style: TextStyle(color: Colors.white)),
                   style: ButtonStyle(
@@ -149,7 +149,7 @@ class _SingleMockupState extends State<SingleMockup> {
     );
   }
 
-  Widget notBeign(MockupCard mockup) {
+  Widget notBegin(MockupCard mockup) {
     return pageLayer(
       context: context,
       pageName: mockup.name,
@@ -160,7 +160,7 @@ class _SingleMockupState extends State<SingleMockup> {
           spacing: 20,
           children: [
             mockup,
-            excerciseWidget(mockup),
+            exerciseWidget(mockup),
             rewardsWidget(mockup),
             actions(),
           ],
@@ -169,7 +169,7 @@ class _SingleMockupState extends State<SingleMockup> {
     );
   }
 
-  Widget beignPage(MockupCard mockup) {
+  Widget beginPage(MockupCard mockup) {
     return pageLayer(
       context: context,
       pageName: mockup.name,
@@ -178,7 +178,7 @@ class _SingleMockupState extends State<SingleMockup> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 20,
-          children: [mockup, timer(mockup), excerciseWidget(mockup), actions()],
+          children: [mockup, timer(mockup), exerciseWidget(mockup), actions()],
         ),
       ),
     );
@@ -189,7 +189,7 @@ class _SingleMockupState extends State<SingleMockup> {
     int index = ModalRoute.of(context)?.settings.arguments as int;
     MockupCard mockup = mockups[index];
 
-    return beign ? beignPage(mockup) : notBeign(mockup);
+    return begin ? beginPage(mockup) : notBegin(mockup);
   }
 }
 
