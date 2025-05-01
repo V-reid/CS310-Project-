@@ -65,4 +65,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'fitquest-2c7e6.firebasestorage.app',
     iosBundleId: 'com.example.fitQuest',
   );
+
 }

@@ -4,8 +4,15 @@ import 'package:fit_quest/common/layer.dart';
 // If adding new pages, add it to allPages.dart instead, to save on clutter.
 import 'package:fit_quest/pages/allPages.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+
+
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
