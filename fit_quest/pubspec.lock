@@ -121,6 +121,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+<<<<<<< HEAD
   firebase_auth:
     dependency: "direct main"
     description:
@@ -145,6 +146,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.14.2"
+=======
+>>>>>>> firebase_connection
   firebase_core:
     dependency: "direct main"
     description:
@@ -169,6 +172,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.22.0"
+<<<<<<< HEAD
   firebase_dynamic_links:
     dependency: transitive
     description:
@@ -217,6 +221,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
+=======
+>>>>>>> firebase_connection
   flutter:
     dependency: "direct main"
     description: flutter
@@ -373,6 +379,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+<<<<<<< HEAD
   provider:
     dependency: "direct main"
     description:
@@ -381,6 +388,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
+=======
+>>>>>>> firebase_connection
   sky_engine:
     dependency: transitive
     description: flutter
