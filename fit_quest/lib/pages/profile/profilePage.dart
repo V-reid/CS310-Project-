@@ -1,7 +1,12 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/layer.dart';
+import 'package:fit_quest/model/user.dart';
+import 'package:fit_quest/pages/errorPage.dart';
+import 'package:fit_quest/pages/loadingPage.dart';
 import 'package:fit_quest/pages/profile/components.dart';
+import 'package:fit_quest/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -20,8 +25,6 @@ class Stat {
   int lvl;
   List<double> exp;
 }
-
-enum League { bronze, silver, gold, platinum, diamond, legends }
 
 class ProfileBadge {
   ProfileBadge({required this.title, this.league = League.bronze});
@@ -77,59 +80,69 @@ class _ProfilePageState extends State<ProfilePage> {
       ProfileBadge(title: "Legends Warrior", league: League.legends),
     ],
   );
-
   @override
   Widget build(BuildContext context) {
     profile.badges.sort((a, b) => b.league.index - a.league.index);
-    return pageLayer(
-      context: context,
-      pageName: "PROFILE",
-      body: SingleChildScrollView(
-        child: Column(
-          spacing: 40,
-          children: [
-            Row(
-              spacing: 20,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [profileImage(profile), profileInfo(profile)],
+    final user = Provider.of<FitUser?>(context);
+    return StreamBuilder<UserData?>(
+      stream: DatabaseService(uid: user!.uid).userData,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          UserData? userData = snapshot.data;
+          if (userData == null) return ErrorPage(errorDetail: "error");
+          return pageLayer(
+            context: context,
+            pageName: "PROFILE",
+            body: SingleChildScrollView(
+              child: Column(
+                spacing: 40,
+                children: [
+                  Row(
+                    spacing: 20,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [profileInfo(userData)], //profileImage(profile)
+                  ),
+                  Common.sectionName(title: "Attributes", flexs: [0, 4, 5]),
+                  Common.Grid<Stat>(
+                    items: profile.stats,
+                    toElement: (x) => statsCard(x),
+                  ),
+                  // Container(
+                  //   height: 500,
+                  //   child: GridView.count(
+                  //     shrinkWrap: true,
+                  //     crossAxisCount: 2,
+                  //     children: profile.stats.map((x) => statsCard(x)).toList(),
+                  //   ),
+                  // ),
+                  // for (int i = 0; i <= (profile.stats.length / 2).ceil(); i = i + 2)
+                  //   Row(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     spacing: 15,
+                  //     children:
+                  //         profile.stats
+                  //             .where(
+                  //               (x) =>
+                  //                   profile.stats.indexOf(x) >= i &&
+                  //                   profile.stats.indexOf(x) <= i + 1,
+                  //             )
+                  //             .map((x) => statsCard(x))
+                  //             .toList(),
+                  //   ),
+                  Common.sectionName(title: "Badges", flexs: [0, 2, 5]),
+                  Common.Grid<ProfileBadge>(
+                    col: 2,
+                    items: profile.badges,
+                    toElement: (x) => badgeWidget(x),
+                  ),
+                ],
+              ),
             ),
-            Common.sectionName(title: "Attributes", flexs: [0, 4, 5]),
-            Common.Grid<Stat>(
-              items: profile.stats,
-              toElement: (x) => statsCard(x),
-            ),
-            // Container(
-            //   height: 500,
-            //   child: GridView.count(
-            //     shrinkWrap: true,
-            //     crossAxisCount: 2,
-            //     children: profile.stats.map((x) => statsCard(x)).toList(),
-            //   ),
-            // ),
-            // for (int i = 0; i <= (profile.stats.length / 2).ceil(); i = i + 2)
-            //   Row(
-            //     mainAxisAlignment: MainAxisAlignment.center,
-            //     spacing: 15,
-            //     children:
-            //         profile.stats
-            //             .where(
-            //               (x) =>
-            //                   profile.stats.indexOf(x) >= i &&
-            //                   profile.stats.indexOf(x) <= i + 1,
-            //             )
-            //             .map((x) => statsCard(x))
-            //             .toList(),
-            //   ),
-            Common.sectionName(title: "Badges", flexs: [0, 2, 5]),
-            Common.Grid<ProfileBadge>(
-              col: 2,
-              items: profile.badges,
-              toElement: (x) => badgeWidget(x),
-            ),
-          ],
-        ),
-      ),
+          );
+        }
+        return LoadingPage();
+      },
     );
   }
 }

@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:fit_quest/pages/home/components/homeCard.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final String uuid;
+  const HomePage({super.key, required this.uuid});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -41,21 +42,21 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return pageLayer(
-        context: context,
-        pageName: "HOME",
-        body: Center(
+      context: context,
+      pageName: "HOME",
+      body: Center(
         child: SingleChildScrollView(
           child: Container(
-              padding: UI.pady(60),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                spacing: 70,
-                children: statCards,
-              ),
-          )
-          )
+            padding: UI.pady(60),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 70,
+              children: statCards,
+            ),
+          ),
         ),
+      ),
     );
   }
 }
