@@ -14,16 +14,17 @@ class Attribute {
 
 enum League { bronze, silver, gold, platinum, diamond, legends }
 
-class Badge {
+class ProfileBadge {
   final String name;
   final League league;
 
-  Badge({required this.name, this.league = League.bronze});
+  ProfileBadge({required this.name, this.league = League.bronze});
 }
 
 class UserData {
   final String uid;
   final String name;
+  final String? profilePic;
   final int age;
   final double weight;
   final double height;
@@ -31,7 +32,7 @@ class UserData {
   List<double> exp = List.filled(2, 0, growable: false);
   List<double> health = List.filled(2, 0, growable: false);
   List<Attribute> attributes;
-  List<Badge> badges;
+  List<ProfileBadge> badges;
 
   UserData({
     required this.uid,
@@ -39,6 +40,7 @@ class UserData {
     required this.age,
     required this.weight,
     required this.height,
+    this.profilePic,
     this.lvl = 1,
     this.exp = const [0, 100],
     this.health = const [0, 100],
