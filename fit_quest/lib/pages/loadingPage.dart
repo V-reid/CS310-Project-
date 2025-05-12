@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class LoadingPage extends StatelessWidget {
-  const LoadingPage({super.key});
+  final Widget? floatingActionButton;
+  const LoadingPage({super.key, this.floatingActionButton});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: floatingActionButton,
       body: SafeArea(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -1,30 +1,38 @@
-import 'package:fit_quest/common/common.dart';
-import 'package:fit_quest/model/user.dart';
-import 'package:fit_quest/pages/profile/profilePage.dart';
-import 'package:flutter/material.dart';
+import 'dart:core';
 
-// Widget profileImage(UserData userData) {
-//   return Column(
-//     spacing: 5,
-//     children: [
-//       Container(
-//         width: 80,
-//         height: 80,
-//         decoration: BoxDecoration(
-//           image: DecorationImage(
-//             image: AssetImage(userData.image ?? "assets/notFound.jpeg"),
-//             fit: BoxFit.cover,
-//             // colorFilter: ColorFilter.mode(overlayColor, blend),
-//           ),
-//           borderRadius: UI.borderRadius,
-//           border: Border.all(color: Colors.grey, width: 1),
-//         ),
-//         child: Container(),
-//       ),
-//       profileTextInfo("Lvl", profile.level.toString()),
-//     ],
-//   );
-// }
+import 'package:fit_quest/common/common.dart';
+import 'package:fit_quest/common/inputs.dart';
+import 'package:fit_quest/model/user.dart';
+import 'package:fit_quest/pages/errorPage.dart';
+import 'package:fit_quest/pages/profile/profilePage.dart';
+import 'package:fit_quest/services/auth.dart';
+import 'package:fit_quest/services/database.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+Widget profileImage(UserData userData) {
+  return Column(
+    spacing: 5,
+    children: [
+      Container(
+        width: 80,
+        height: 80,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(userData?.profilePic ?? "assets/notFound.jpeg"),
+            fit: BoxFit.cover,
+            // colorFilter: ColorFilter.mode(overlayColor, blend),
+          ),
+          borderRadius: UI.borderRadius,
+          border: Border.all(color: Colors.grey, width: 1),
+        ),
+        child: Container(),
+      ),
+      profileTextInfo("Lvl", (userData?.lvl ?? 1).toString()),
+    ],
+  );
+}
 
 Widget profileTextInfo(String label, String value) {
   return Column(
@@ -61,7 +69,7 @@ Widget profileInfo(UserData userData) {
   );
 }
 
-Widget statsCard(Stat stat) {
+Widget statsCard(Attribute stat) {
   double width = 180;
   return Container(
     width: width,
@@ -113,8 +121,155 @@ Widget badgeWidget(ProfileBadge badge) {
     padding: UI.padxy(10, 5),
     decoration: BoxDecoration(borderRadius: UI.borderRadius, color: current),
     child: Text(
-      badge.title,
+      badge.name,
       style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
     ),
   );
+}
+
+class EditProfile extends StatefulWidget {
+  final String userId;
+  const EditProfile({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _EditProfileState createState() => _EditProfileState();
+}
+
+class _EditProfileState extends State<EditProfile> {
+  final AuthService _auth = AuthService();
+
+  String uid = "";
+  String name = '';
+  int age = 18;
+  double weight = 0;
+  double height = 0;
+
+  String error = '';
+
+  final _formKey = GlobalKey<FormState>();
+
+  Widget actions(UserData user) {
+    return Column(
+      children: [
+        Inputs.formButton(
+          state: _formKey.currentState,
+          backgroundColor: UI.primary,
+          onPressed: () async {
+            if (_formKey.currentState!.validate()) {
+              dynamic result = await DatabaseService(
+                uid: widget.userId,
+              ).updateUserData(user);
+              if (result == null) {
+                setState(() {
+                  error = '500 server error';
+                });
+              } else {
+                print('Success');
+              }
+            }
+          },
+          text: "Sign up",
+          textColor: Colors.white,
+        ),
+      ],
+    );
+  }
+
+  Widget form(UserData user) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        spacing: 10,
+        children: [
+          TextFormField(
+            validator: Validators.email,
+            onChanged: (value) {
+              setState(() {
+                name = value ?? '';
+              });
+            },
+            initialValue: name,
+            style: TextStyle(fontSize: 12),
+            keyboardType: TextInputType.emailAddress,
+            decoration: Inputs.inputDecoration("Name", Icons.email),
+          ),
+
+          TextFormField(
+            keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+            validator: Validators.positiveInt,
+            initialValue: age.toString(),
+            onChanged: (value) {
+              setState(() {
+                age = value != '' ? int.parse(value) : 0;
+              });
+            },
+            style: TextStyle(fontSize: 12),
+            decoration: Inputs.inputDecoration("Age", Icons.cake),
+          ),
+
+          TextFormField(
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            initialValue: weight.toString(),
+            validator: Validators.positiveDouble,
+            onChanged: (value) {
+              setState(() {
+                weight = value != '' ? double.parse(value) : 0;
+              });
+            },
+            style: TextStyle(fontSize: 12),
+            decoration: Inputs.inputDecoration(
+              "Weight (kg)",
+              Icons.line_weight,
+            ),
+          ),
+
+          TextFormField(
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            initialValue: height.toString(),
+            validator: Validators.positiveDouble,
+            onChanged: (value) {
+              setState(() {
+                height = value != '' ? double.parse(value) : 0;
+              });
+            },
+            style: TextStyle(fontSize: 12),
+            decoration: Inputs.inputDecoration("Height", Icons.height),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<UserData?>(
+      stream: DatabaseService(uid: widget.userId).userData,
+      builder: (context, snapshot) {
+        UserData? userData = snapshot.data;
+        if (userData == null) return ErrorPage(errorDetail: "error");
+        uid = userData.uid;
+        name = userData.name;
+        age = userData.age;
+        weight = userData.weight;
+        height = userData.height;
+        return Column(
+          spacing: 20,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Start Your Journey",
+              style: TextStyle(fontSize: 24),
+              textAlign: TextAlign.center,
+            ),
+            form(userData),
+
+            actions(userData),
+          ],
+        );
+      },
+    );
+  }
 }
