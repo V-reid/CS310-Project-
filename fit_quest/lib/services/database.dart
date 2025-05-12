@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_quest/model/user.dart';
 
@@ -6,21 +8,21 @@ class DatabaseService {
 
   DatabaseService({required this.uid});
 
-  // collection reference
   final CollectionReference userCollection = FirebaseFirestore.instance
       .collection('user');
 
-  Future updateUserData(
-    String name,
-    int age,
-    double weight,
-    double height,
-  ) async {
+  Future updateUserData(UserData u) async {
     return await userCollection.doc(uid).set({
-      'name': name,
-      'age': age,
-      'weight': weight,
-      'height': height,
+      'name': u.name,
+      'age': u.age,
+      'weight': u.weight,
+      'height': u.height,
+      "profilePic": u.profilePic,
+      "lvl": u.lvl,
+      "exp": u.exp,
+      "health": u.health,
+      "attributes": u.attributes,
+      "badges": u.badges,
     });
   }
 
@@ -31,15 +33,15 @@ class DatabaseService {
       age: snapshot["age"],
       weight: snapshot["weight"],
       height: snapshot["height"],
-      // lvl: snapshot["lvl"],
-      // exp: snapshot["exp"],
-      // health: snapshot["health"],
-      // attributes: snapshot["attributes"],
-      // badges: snapshot["badges"],
+      profilePic: snapshot["profilePic"],
+      lvl: snapshot["lvl"],
+      exp: List<double>.from(snapshot.get("exp")),
+      health: List<double>.from(snapshot.get("health")),
+      attributes: List<Attribute>.from(snapshot.get("attributes")),
+      badges: List<ProfileBadge>.from(snapshot.get("badges")),
     );
   }
 
-  // get user doc stream
   Stream<UserData> get userData {
     return userCollection.doc(uid).snapshots().map(mapUser);
   }
