@@ -27,6 +27,17 @@ class MyApp extends StatelessWidget {
               snapshot.hasError
                   ? MaterialApp(
                     home: ErrorPage(errorDetail: "Error on initialization!"),
+
+                    routes: {
+                      "/": (context) => Text("PORCA MADONNA"),
+                      "/profile": (context) => ProfilePage(),
+                      "/mockup": (context) => MockupPage(),
+                      "/mockup/single": (context) => SingleMockup(),
+                      "/schedule": (context) => SchedulePage(),
+                      "/quests": (context) => QuestsPage(),
+                    },
+
+                    
                   )
                   : snapshot.connectionState == ConnectionState.done
                   ? StreamProvider<FitUser?>.value(
@@ -35,6 +46,7 @@ class MyApp extends StatelessWidget {
                     child: MaterialApp(home: Wrapper()),
                   )
                   : MaterialApp(home: LoadingPage()),
+
     );
   }
 }

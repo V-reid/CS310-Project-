@@ -43,9 +43,14 @@ const mockups = [
   ),
 ];
 
-class MockupPage extends StatelessWidget {
+class MockupPage extends StatefulWidget {
   const MockupPage({super.key});
 
+  @override
+  State<MockupPage> createState() => _MockupPageState();
+}
+
+class _MockupPageState extends State<MockupPage> {
   @override
   Widget build(BuildContext context) {
     return pageLayer(
