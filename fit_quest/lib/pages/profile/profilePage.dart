@@ -4,6 +4,7 @@ import 'package:fit_quest/model/user.dart';
 import 'package:fit_quest/pages/errorPage.dart';
 import 'package:fit_quest/pages/loadingPage.dart';
 import 'package:fit_quest/pages/profile/components.dart';
+import 'package:fit_quest/services/auth.dart';
 import 'package:fit_quest/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,6 +81,8 @@ class _ProfilePageState extends State<ProfilePage> {
       ProfileBadge(title: "Legends Warrior", league: League.legends),
     ],
   );
+  final AuthService _auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
     profile.badges.sort((a, b) => b.league.index - a.league.index);
@@ -91,6 +94,12 @@ class _ProfilePageState extends State<ProfilePage> {
           UserData? userData = snapshot.data;
           if (userData == null) return ErrorPage(errorDetail: "error");
           return pageLayer(
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                await _auth.signOut();
+              },
+              child: Icon(Icons.logout),
+            ),
             context: context,
             pageName: "PROFILE",
             body: SingleChildScrollView(
