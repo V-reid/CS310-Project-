@@ -42,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
           text: "Link Start",
           textColor: Colors.white,
         ),
+
         Inputs.formButton(
           state: _formKey.currentState,
           onPressed: () => widget.changeView(),
@@ -103,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
               Text("FitQuest", style: TextStyle(fontSize: 24)),
               form(),
               actions(),
+              Text(error, style: TextStyle(color: Colors.red)),
             ],
           ),
         ),
