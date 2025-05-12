@@ -69,7 +69,7 @@ class Inputs {
 
 class Validators {
   static var email = (value) {
-    if (value != null) {
+    if (value != '') {
       if (value.isEmpty) {
         return "This field is required";
       }
@@ -80,7 +80,7 @@ class Validators {
   };
 
   static var password = (value) {
-    if (value != null) {
+    if (value != '') {
       if (value.isEmpty) {
         return "This field is required";
       }
@@ -88,5 +88,47 @@ class Validators {
         return "Password too short";
       }
     }
+  };
+
+  static var text = (value) {
+    if (value != '') {
+      if (value.isEmpty) {
+        return 'This field is required';
+      }
+    }
+  };
+
+  static var positiveInt = (value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+
+    final number = int.tryParse(value);
+    if (number == null) {
+      return 'Invalid number format';
+    }
+
+    if (number <= 0) {
+      return 'Must be greater than zero';
+    }
+
+    return null;
+  };
+  
+  static var positiveDouble = (value) {
+    if (value == null || value.isEmpty) {
+      return 'This field is required';
+    }
+
+    final number = double.tryParse(value);
+    if (number == null) {
+      return 'Invalid number format';
+    }
+
+    if (number <= 0) {
+      return 'Must be greater than zero';
+    }
+
+    return null;
   };
 }

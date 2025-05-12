@@ -1,29 +1,30 @@
 import 'package:fit_quest/common/common.dart';
+import 'package:fit_quest/model/user.dart';
 import 'package:fit_quest/pages/profile/profilePage.dart';
 import 'package:flutter/material.dart';
 
-Widget profileImage(Profile profile) {
-  return Column(
-    spacing: 5,
-    children: [
-      Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(profile.image ?? "assets/notFound.jpeg"),
-            fit: BoxFit.cover,
-            // colorFilter: ColorFilter.mode(overlayColor, blend),
-          ),
-          borderRadius: UI.borderRadius,
-          border: Border.all(color: Colors.grey, width: 1),
-        ),
-        child: Container(),
-      ),
-      profileTextInfo("Lvl", profile.level.toString()),
-    ],
-  );
-}
+// Widget profileImage(UserData userData) {
+//   return Column(
+//     spacing: 5,
+//     children: [
+//       Container(
+//         width: 80,
+//         height: 80,
+//         decoration: BoxDecoration(
+//           image: DecorationImage(
+//             image: AssetImage(userData.image ?? "assets/notFound.jpeg"),
+//             fit: BoxFit.cover,
+//             // colorFilter: ColorFilter.mode(overlayColor, blend),
+//           ),
+//           borderRadius: UI.borderRadius,
+//           border: Border.all(color: Colors.grey, width: 1),
+//         ),
+//         child: Container(),
+//       ),
+//       profileTextInfo("Lvl", profile.level.toString()),
+//     ],
+//   );
+// }
 
 Widget profileTextInfo(String label, String value) {
   return Column(
@@ -35,24 +36,24 @@ Widget profileTextInfo(String label, String value) {
   );
 }
 
-Widget profileInfo(Profile profile) {
+Widget profileInfo(UserData userData) {
   return Column(
     spacing: 10,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      profileTextInfo("Name", profile.name),
+      profileTextInfo("Name", userData.name),
       Row(
         spacing: 30,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          profileTextInfo("Age", profile.age.toString()),
-          profileTextInfo("Weight", "${profile.weight.toString()}kg"),
-          profileTextInfo("Height", "${profile.height.toString()}cm"),
+          profileTextInfo("Age", userData.age.toString()),
+          profileTextInfo("Weight", "${userData.weight.toString()}kg"),
+          profileTextInfo("Height", "${userData.height.toString()}cm"),
         ],
       ),
       Common.progressBar(
-        current: profile.health[0],
-        max: profile.health[1],
+        current: userData.health[0],
+        max: userData.health[1],
         width: 250,
         height: 20,
       ),

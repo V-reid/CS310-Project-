@@ -1,20 +1,23 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/inputs.dart';
+import 'package:fit_quest/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final Function changeView;
+
+  const LoginPage({Key? key, required this.changeView}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String? email;
-  String? password;
+  final AuthService _auth = AuthService();
+  String email = '';
+  String password = '';
+  String error = '';
 
   final _formKey = GlobalKey<FormState>();
 
@@ -24,15 +27,24 @@ class _LoginPageState extends State<LoginPage> {
         Inputs.formButton(
           state: _formKey.currentState,
           backgroundColor: UI.primary,
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, "/");
+          onPressed: () async {
+            if (_formKey.currentState!.validate()) {
+              dynamic result = await _auth.signIn(email, password);
+              if (result == null) {
+                setState(() {
+                  error = 'Wrong credentials';
+                });
+              } else {
+                print('Logged in');
+              }
+            }
           },
-          text: "Login",
+          text: "Link Start",
           textColor: Colors.white,
         ),
         Inputs.formButton(
           state: _formKey.currentState,
-          onPressed: () => Navigator.pushReplacementNamed(context, "/signup"),
+          onPressed: () => widget.changeView(),
           text: "Sign Up",
           isPrimary: false,
         ),
@@ -50,32 +62,25 @@ class _LoginPageState extends State<LoginPage> {
             validator: Validators.email,
             onChanged: (value) {
               setState(() {
-                email = value != "" ? value : null;
+                email = value ?? '';
               });
             },
             style: TextStyle(fontSize: 12),
             keyboardType: TextInputType.emailAddress,
 
-            onSaved:
-                (value) => setState(() {
-                  email = value;
-                }),
             decoration: Inputs.inputDecoration("Email", Icons.email),
           ),
           TextFormField(
             validator: Validators.password,
             onChanged: (value) {
               setState(() {
-                password = value != "" ? value : null;
+                password = value ?? '';
               });
             },
             style: TextStyle(fontSize: 12),
             keyboardType: TextInputType.visiblePassword,
             obscureText: true,
-            onSaved:
-                (value) => setState(() {
-                  password = value;
-                }),
+
             decoration: Inputs.inputDecoration("Password", Icons.password),
           ),
         ],
@@ -94,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
             spacing: 20,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset('assets/fit_quest_logo.svg',),
+              // SvgPicture.asset('assets/fit_quest_logo.svg',),
               Text("FitQuest", style: TextStyle(fontSize: 24)),
               form(),
               actions(),
