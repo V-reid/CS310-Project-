@@ -55,11 +55,11 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> {
   int selectedDayIndex = DateTime.now().weekday - 1;
-  final Map<int, List<MockupCard>> trainingSchedule = {
-    0: [mockups[0]], // Monday
-    2: [mockups[1]], // Wednesday
-    6: [mockups[2]], // Sunday
-  };
+  // final Map<int, List<MockupCard>> trainingSchedule = {
+  //   0: [mockups[0]], // Monday
+  //   2: [mockups[1]], // Wednesday
+  //   6: [mockups[2]], // Sunday
+  // };
 
   @override
   Widget build(BuildContext context) {
@@ -100,9 +100,9 @@ class _SchedulePageState extends State<SchedulePage> {
             ),
             Column(
               children: [
-                if (trainingSchedule[selectedDayIndex] != null &&
-                    trainingSchedule[selectedDayIndex]!.isNotEmpty)
-                  ...trainingSchedule[selectedDayIndex]!
+                if (schedule[selectedDayIndex] != null &&
+                    schedule[selectedDayIndex]!.isNotEmpty)
+                  ...schedule[selectedDayIndex]!
                       .expand((card) => [
                     card,
                     const SizedBox(height: 20), // Adjust spacing as needed
@@ -131,11 +131,9 @@ class _SchedulePageState extends State<SchedulePage> {
 
                     if (selected != null && selected.isNotEmpty) {
                       setState(() {
-                        trainingSchedule.update(
-                          selectedDayIndex,
-                              (list) => [...list, ...selected],
-                          ifAbsent: () => selected,
-                        );
+                        provider.updateScheduleForDay(
+                            selectedDayIndex,
+                            [...(schedule[selectedDayIndex] ?? []), ...selected]);
                       });
                     }
                   },
