@@ -3,6 +3,7 @@ import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/pages/allPages.dart';
 import 'package:flutter/material.dart';
 import 'package:fit_quest/pages/home/components/homeCard.dart';
+import 'package:fit_quest/pages/schedule/schedulePage.dart';
 
 class NavigationTab extends StatefulWidget {
   final String uuid;
