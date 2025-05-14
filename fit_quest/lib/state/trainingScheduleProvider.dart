@@ -81,7 +81,7 @@ class TrainingScheduleProvider with ChangeNotifier {
     print("Saving schedule for user: ${user.uid}");
     print(scheduleMap);
 
-    await db.collection('user').doc(user.uid).set({
+    await db.collection('schedules').doc(user.uid).set({
       'schedule': scheduleMap,
     }, SetOptions(merge: true)); // merge keeps other user fields
   }
@@ -93,7 +93,7 @@ class TrainingScheduleProvider with ChangeNotifier {
   }
 
   Future<void> loadSchedule() async {
-    final doc = await _firestore.collection('user').doc(userId).get();
+    final doc = await _firestore.collection('schedules').doc(userId).get();
     final data = doc.data();
 
     if (data == null || data['schedule'] == null) return;
