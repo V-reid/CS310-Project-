@@ -55,20 +55,12 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> {
   int selectedDayIndex = DateTime.now().weekday - 1;
-  // final Map<int, List<MockupCard>> trainingSchedule = {
-  //   0: [mockups[0]], // Monday
-  //   2: [mockups[1]], // Wednesday
-  //   6: [mockups[2]], // Sunday
-  // };
 
   @override
   Widget build(BuildContext context) {
     final todayIndex = DateTime.now().weekday - 1;
     final provider = Provider.of<TrainingScheduleProvider>(context);
     final schedule = provider.trainingSchedule;
-    // final weekday = todayIndex;
-    // final days = Common.days; // ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
-    // int selectedDayIndex = today.weekday;
 
     return pageLayer(
       context: context,
@@ -77,12 +69,9 @@ class _SchedulePageState extends State<SchedulePage> {
         child: Column(
           spacing: 60,
           children: [
-
             // Day Bar
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              // children:
-              //     Common.days.map((x) => Common.dayButton(text: x)).toList(),
               children: List.generate(Common.days.length, (index) {
                 final isToday = index == todayIndex;
                 final isSelected = index == selectedDayIndex;
@@ -104,9 +93,59 @@ class _SchedulePageState extends State<SchedulePage> {
                     schedule[selectedDayIndex]!.isNotEmpty)
                   ...schedule[selectedDayIndex]!
                       .expand((card) => [
-                    card,
-                    const SizedBox(height: 20), // Adjust spacing as needed
-                  ])
+                            // Wrap each card with a Stack to overlay the remove button
+                            Stack(
+                              children: [
+                                card,
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      // Show confirmation dialog
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: Text("Remove Training"),
+                                            content: Text("Are you sure you want to remove '${card.name}' from your schedule?"),
+                                            actions: [
+                                              TextButton(
+                                                child: Text("Cancel"),
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: Text("Remove"),
+                                                onPressed: () {
+                                                  provider.removeCard(selectedDayIndex, card);
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.withOpacity(0.8),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Icon(
+                                        Icons.close,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                          ])
                       .toList()
                 else
                   Text(
@@ -141,9 +180,9 @@ class _SchedulePageState extends State<SchedulePage> {
                 ),
               ],
             ),
-          ]
-        )
-      )
+          ],
+        ),
+      ),
     );
   }
 }
