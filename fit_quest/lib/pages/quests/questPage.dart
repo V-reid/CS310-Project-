@@ -49,11 +49,11 @@ class _QuestsPageState extends State<QuestsPage> {
         child: Column(
           spacing: 60,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children:
-                  Common.days.map((x) => Common.dayButton(text: x)).toList(),
-            ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children:
+            //       Common.days.map((x) => Common.dayButton(text: x)).toList(),
+            // ),
             Column(
               spacing: 20,
               children: [

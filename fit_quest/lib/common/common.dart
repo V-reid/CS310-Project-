@@ -69,18 +69,18 @@ class Common {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Expanded(
-          flex: flexs[0],
-          child: Container(height: 3, width: 20, color: Colors.black),
-        ),
+        // Expanded(
+        //   flex: flexs[0],
+        //   child: Container(height: 3, width: 20, color: Colors.black),
+        // ),
         Expanded(
           flex: flexs[1],
           child: Center(child: Common.title(data: title, fontSize: 16)),
         ),
-        Expanded(
-          flex: flexs[2],
-          child: Container(height: 3, width: 20, color: Colors.black),
-        ),
+        // Expanded(
+        //   flex: flexs[2],
+        //   child: Container(height: 3, width: 20, color: Colors.black),
+        // ),
       ],
     );
   }
