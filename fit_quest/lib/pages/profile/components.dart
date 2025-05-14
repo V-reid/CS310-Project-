@@ -257,7 +257,15 @@ class _EditProfileState extends State<EditProfile> {
 
                   dynamic result = await DatabaseService(
                     uid: user.uid!,
-                  ).updateUserData2(name, age, weight, height);
+                  ).updateUserData(
+                    UserData(
+                      uid: uid,
+                      name: name,
+                      age: age,
+                      weight: weight,
+                      height: height,
+                    ),
+                  );
 
                   if (result == null) {
                     // setState(() {
