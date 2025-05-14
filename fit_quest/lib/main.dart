@@ -10,9 +10,26 @@ import 'package:fit_quest/pages/loadingPage.dart';
 import 'package:fit_quest/pages/wrapper.dart';
 import 'package:fit_quest/services/auth.dart';
 import 'package:provider/provider.dart';
+import 'package:fit_quest/state/trainingScheduleProvider.dart';
 
 void main() {
-  runApp(const MyApp());
+  // runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) {
+        final provider = TrainingScheduleProvider();
+        provider.loadSchedule(); // Load saved data
+        return provider;
+      },
+      child: MyApp(),
+    ),
+    // MultiProvider(
+    //   providers: [
+    //     ChangeNotifierProvider(create: (_) => TrainingScheduleProvider()),
+    //   ],
+    //   child: const MyApp(),
+    // ),
+  );
 }
 
 class MyApp extends StatelessWidget {

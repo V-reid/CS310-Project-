@@ -166,21 +166,33 @@ class Common {
     );
   }
 
-  static List<String> days = ["M", "Tu", "W", "Th", "F", "Sa", "Su"];
-  static Widget dayButton({required String text, void Function()? onTap}) {
+  static List<String> days = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
+  static Widget dayButton({required String text,
+                          void Function()? onTap,
+                          bool isToday = false,
+                          bool isSelected = false,
+                          }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        // width: 30,
         padding: UI.padxy(10, 5),
-        // color: UI.accent,
         decoration: BoxDecoration(
-          color: UI.accent,
-
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+        color: isSelected ? Colors.white : UI.accent,
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+        border: Border.all(
+        color: isToday ? Colors.red : (isSelected ? Colors.black : Colors.transparent),
+        width: isToday || isSelected ? 2 : 0,
         ),
-
-        child: Center(child: Text(text, style: TextStyle(color: Colors.black))),
+        ),
+        child: Center(
+          child: Text(
+            text,
+            style: TextStyle(
+            color: Colors.black,
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
       ),
     );
   }

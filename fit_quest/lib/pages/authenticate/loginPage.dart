@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
                   error = 'Wrong credentials';
                 });
               } else {
-                print('Logged in');
+                debugPrint('Logged in');
               }
             }
           },
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
             spacing: 20,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // SvgPicture.asset('assets/fit_quest_logo.svg',),
+              SvgPicture.asset('assets/fit_quest_logo.svg',),
               Text("FitQuest", style: TextStyle(fontSize: 24)),
               form(),
               actions(),

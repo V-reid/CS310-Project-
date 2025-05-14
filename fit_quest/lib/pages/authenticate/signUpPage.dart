@@ -165,7 +165,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                   style: TextStyle(fontSize: 12),
                   decoration: Inputs.inputDecoration(
-                    "Weight (cm)",
+                    "Weight (kg)",
                     Icons.line_weight,
                   ),
                 ),
@@ -183,7 +183,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     });
                   },
                   style: TextStyle(fontSize: 12),
-                  decoration: Inputs.inputDecoration("Height", Icons.height),
+                  decoration: Inputs.inputDecoration("Height (cm)", Icons.height),
                 ),
               ),
             ],
