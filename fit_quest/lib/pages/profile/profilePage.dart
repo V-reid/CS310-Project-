@@ -109,7 +109,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         ],
                       ),
                     )
-                    : EditProfile(userId: user.uid),
+                    : EditProfile(
+                      
+                      changeEdit:
+                          () => setState(() {
+                            edit = false;
+                          }),
+                    ),
           );
         }
         return LoadingPage(floatingActionButton: singOut(_auth));
