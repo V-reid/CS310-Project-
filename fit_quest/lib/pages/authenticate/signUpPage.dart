@@ -211,6 +211,7 @@ class _SignUpPageState extends State<SignUpPage> {
               form(),
 
               actions(),
+              Text(error, style: TextStyle(color: Colors.red)),
             ],
           ),
         ),

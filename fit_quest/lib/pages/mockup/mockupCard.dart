@@ -167,4 +167,29 @@ class MockupCard extends StatelessWidget {
       ),
     );
   }
+
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'time': time,
+    'level': level.name,
+    'kcalBurn': kcalBurn,
+    'image': image,
+    'mostPopular': mostPopular,
+    'exercise': exercise,
+    'rewards': rewards,
+  };
+
+  static MockupCard fromJson(Map<String, dynamic> json) => MockupCard(
+    name: json['name'],
+    time: (json['time'] as num).toDouble(),
+    level: Difficulty.values.byName(json['level']),
+    kcalBurn: json['kcalBurn'],
+    image: json['image'],
+    mostPopular: json['mostPopular'] ?? false,
+    exercise: Map<String, String>.from(json['exercise']),
+    rewards: json['rewards'] != null
+        ? Map<String, String>.from(json['rewards'])
+        : null,
+  );
+
 }

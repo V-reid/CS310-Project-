@@ -128,8 +128,8 @@ Widget badgeWidget(ProfileBadge badge) {
 }
 
 class EditProfile extends StatefulWidget {
-  final String userId;
-  const EditProfile({Key? key, required this.userId}) : super(key: key);
+  final Function changeEdit;
+  const EditProfile({Key? key, required this.changeEdit}) : super(key: key);
 
   @override
   _EditProfileState createState() => _EditProfileState();
@@ -148,29 +148,9 @@ class _EditProfileState extends State<EditProfile> {
 
   final _formKey = GlobalKey<FormState>();
 
-  Widget actions(UserData user) {
-    return Column(
-      children: [
-        Inputs.formButton(
-          state: _formKey.currentState,
-          backgroundColor: UI.primary,
-          onPressed: () async {
-            if (_formKey.currentState!.validate()) {
-              dynamic result = await DatabaseService(
-                uid: widget.userId,
-              ).updateUserData(user);
-              if (result == null) {
-                setState(() {
-                  error = '500 server error';
-                });
-              } else {
-                print('Success');
-              }
-            }
-          },
-          text: "Sign up",
-          textColor: Colors.white,
-        ),
+  Widget actions() {
+    return Column(children: [
+        
       ],
     );
   }
@@ -182,7 +162,7 @@ class _EditProfileState extends State<EditProfile> {
         spacing: 10,
         children: [
           TextFormField(
-            validator: Validators.email,
+            validator: Validators.text,
             onChanged: (value) {
               setState(() {
                 name = value ?? '';
@@ -245,8 +225,10 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<FitUser?>(context);
+    if (user == null) return ErrorPage(errorDetail: "error");
     return StreamBuilder<UserData?>(
-      stream: DatabaseService(uid: widget.userId).userData,
+      stream: DatabaseService(uid: user.uid).userData,
       builder: (context, snapshot) {
         UserData? userData = snapshot.data;
         if (userData == null) return ErrorPage(errorDetail: "error");
@@ -266,7 +248,30 @@ class _EditProfileState extends State<EditProfile> {
             ),
             form(userData),
 
-            actions(userData),
+            Inputs.formButton(
+              state: _formKey.currentState,
+              backgroundColor: UI.primary,
+              onPressed: () async {
+                if (_formKey.currentState!.validate()) {
+                  print(user.uid);
+
+                  dynamic result = await DatabaseService(
+                    uid: user.uid!,
+                  ).updateUserData2(name, age, weight, height);
+
+                  if (result == null) {
+                    // setState(() {
+                    //   error = '500 server error';
+                    // });
+                  } else {
+                    widget.changeEdit();
+                  }
+                }
+              },
+              text: "Edit",
+              textColor: Colors.white,
+            ),
+            Text(error, style: TextStyle(color: Colors.red)),
           ],
         );
       },
