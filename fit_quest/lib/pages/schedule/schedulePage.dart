@@ -1,5 +1,6 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/layer.dart';
+import 'package:fit_quest/pages/mockup/singleMockup.dart';
 import 'package:flutter/material.dart';
 
 import 'package:fit_quest/pages/mockup/mockupCard.dart';
@@ -97,7 +98,21 @@ class _SchedulePageState extends State<SchedulePage> {
                           // Wrap each card with a Stack to overlay the remove button
                           Stack(
                             children: [
-                              card,
+                              //card,
+                              GestureDetector(
+                                onTap: () {
+                                  final int index = mockups.indexOf(card);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) =>
+                                              SingleMockup(mockup: card),
+                                    ),
+                                  );
+                                },
+                                child: card,
+                              ),
                               Positioned(
                                 top: 0,
                                 right: 0,
