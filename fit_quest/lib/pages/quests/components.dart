@@ -2,7 +2,6 @@ import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/pages/quests/questPage.dart';
 import 'package:flutter/material.dart';
 
-
 Widget progressQuest({required Quest quest}) {
   return Container(
     margin: UI.padx(20),
@@ -26,7 +25,7 @@ Widget progressQuest({required Quest quest}) {
             border: Border.all(color: Colors.grey, width: 1),
           ),
         ),
-        Text(quest.text),
+        Common.text(data: quest.text),
       ],
     ),
   );

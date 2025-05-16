@@ -108,7 +108,7 @@ class MockupCard extends StatelessWidget {
                           child: Common.text(
                             data: "Most Popular",
                             color: Colors.white,
-                            weight: FontWeight.bold,
+                            fontWeight: FontWeight.bold,
                             fontSize: 10,
                           ),
                         )
@@ -187,9 +187,9 @@ class MockupCard extends StatelessWidget {
     image: json['image'],
     mostPopular: json['mostPopular'] ?? false,
     exercise: Map<String, String>.from(json['exercise']),
-    rewards: json['rewards'] != null
-        ? Map<String, String>.from(json['rewards'])
-        : null,
+    rewards:
+        json['rewards'] != null
+            ? Map<String, String>.from(json['rewards'])
+            : null,
   );
-
 }

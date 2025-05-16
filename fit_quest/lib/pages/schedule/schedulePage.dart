@@ -92,65 +92,79 @@ class _SchedulePageState extends State<SchedulePage> {
                 if (schedule[selectedDayIndex] != null &&
                     schedule[selectedDayIndex]!.isNotEmpty)
                   ...schedule[selectedDayIndex]!
-                      .expand((card) => [
-                            // Wrap each card with a Stack to overlay the remove button
-                            Stack(
-                              children: [
-                                card,
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      // Show confirmation dialog
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("Remove Training"),
-                                            content: Text("Are you sure you want to remove '${card.name}' from your schedule?"),
-                                            actions: [
-                                              TextButton(
-                                                child: Text("Cancel"),
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
+                      .expand(
+                        (card) => [
+                          // Wrap each card with a Stack to overlay the remove button
+                          Stack(
+                            children: [
+                              card,
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // Show confirmation dialog
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Common.text(
+                                            data: "Remove Training",
+                                          ),
+                                          content: Common.text(
+                                            data:
+                                                "Are you sure you want to remove '${card.name}' from your schedule?",
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              child: Common.text(
+                                                data: "Cancel",
                                               ),
-                                              TextButton(
-                                                child: Text("Remove"),
-                                                onPressed: () {
-                                                  provider.removeCard(selectedDayIndex, card);
-                                                  Navigator.of(context).pop();
-                                                },
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: Common.text(
+                                                data: "Remove",
                                               ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.all(4),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red.withOpacity(0.8),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
+                                              onPressed: () {
+                                                provider.removeCard(
+                                                  selectedDayIndex,
+                                                  card,
+                                                );
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red.withOpacity(0.8),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                      size: 16,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                          ])
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      )
                       .toList()
                 else
-                  Text(
-                    "Rest Day or Slack Day? \n START NOW!",
-                    style: TextStyle(fontSize: 20),
+                  Common.text(
+                    data: "Rest Day or Slack Day? \n START NOW!",
+                    fontSize: 20,
                     textAlign: TextAlign.center,
                   ),
 
@@ -162,17 +176,18 @@ class _SchedulePageState extends State<SchedulePage> {
                     final selected = await Navigator.push<List<MockupCard>>(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => MockupSelectionPage(
-                          availableMockups: mockups,
-                        ),
+                        builder:
+                            (_) =>
+                                MockupSelectionPage(availableMockups: mockups),
                       ),
                     );
 
                     if (selected != null && selected.isNotEmpty) {
                       setState(() {
-                        provider.updateScheduleForDay(
-                            selectedDayIndex,
-                            [...(schedule[selectedDayIndex] ?? []), ...selected]);
+                        provider.updateScheduleForDay(selectedDayIndex, [
+                          ...(schedule[selectedDayIndex] ?? []),
+                          ...selected,
+                        ]);
                       });
                     }
                   },

@@ -1,3 +1,4 @@
+import 'package:fit_quest/common/common.dart';
 import 'package:flutter/material.dart';
 
 class ErrorPage extends StatelessWidget {
@@ -14,7 +15,7 @@ class ErrorPage extends StatelessWidget {
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text(errorDetail)],
+              children: [Common.text(data: errorDetail)],
             ),
           ],
         ),

@@ -14,7 +14,7 @@ class SingleMockup extends StatefulWidget {
 
 List<Widget> getExercise(MockupCard mockup) {
   return mockup.exercise == null
-      ? [Text("No Exercise")]
+      ? [Common.text(data: "No Exercise")]
       : mockup.exercise!.keys
           .map(
             (x) => Row(
@@ -22,8 +22,14 @@ List<Widget> getExercise(MockupCard mockup) {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 roundedContainer(width: 20, height: 20),
-                roundedContainer(width: 150, height: 20, child: Text(x)),
-                roundedContainer(child: Text(mockup.exercise?[x] ?? "")),
+                roundedContainer(
+                  width: 150,
+                  height: 20,
+                  child: Common.text(data: x),
+                ),
+                roundedContainer(
+                  child: Common.text(data: mockup.exercise?[x] ?? ""),
+                ),
               ],
             ),
           )
@@ -32,17 +38,17 @@ List<Widget> getExercise(MockupCard mockup) {
 
 List<Widget> getRewards(MockupCard mockup) {
   return mockup.rewards == null
-      ? [Text("No rewards")]
+      ? [Common.text(data: "No rewards")]
       : mockup.rewards!.keys
           .map(
             (x) => roundedContainer(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(x),
+                  Common.text(data: x),
                   Row(
                     children: [
-                      Text(mockup.rewards?[x] ?? ""),
+                      Common.text(data: mockup.rewards?[x] ?? ""),
                       Icon(Icons.arrow_upward, color: Colors.lightGreen),
                     ],
                   ),
@@ -66,7 +72,7 @@ class _SingleMockupState extends State<SingleMockup> {
       ),
       child: Column(
         spacing: 20,
-        children: [Text("Plan"), ...getExercise(widget.mockup)],
+        children: [Common.text(data: "Plan"), ...getExercise(widget.mockup)],
       ),
     );
   }
@@ -81,7 +87,7 @@ class _SingleMockupState extends State<SingleMockup> {
       ),
       child: Column(
         spacing: 20,
-        children: [Text("Redwars"), ...getRewards(widget.mockup)],
+        children: [Common.text(data: "Redwars"), ...getRewards(widget.mockup)],
       ),
     );
   }
@@ -98,7 +104,7 @@ class _SingleMockupState extends State<SingleMockup> {
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all<Color>(UI.accent),
                   ),
-                  child: Text("Pause"),
+                  child: Common.text(data: "Pause"),
                 ),
                 ElevatedButton(
                   onPressed:
@@ -109,13 +115,12 @@ class _SingleMockupState extends State<SingleMockup> {
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all<Color>(UI.primary),
                   ),
-                  child: Text("Finish", style: TextStyle(color: Colors.white)),
+                  child: Common.text(data: "Finish", color: Colors.white),
                 ),
               ]
               : [
                 ElevatedButton(
-                  onPressed:
-                      () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(context),
                   child: Icon(Icons.arrow_back),
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all<Color>(UI.accent),
@@ -126,7 +131,7 @@ class _SingleMockupState extends State<SingleMockup> {
                       () => setState(() {
                         begin = true;
                       }),
-                  child: Text("Begin", style: TextStyle(color: Colors.white)),
+                  child: Common.text(data: "Begin", color: Colors.white),
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all<Color>(UI.primary),
                   ),
@@ -145,7 +150,10 @@ class _SingleMockupState extends State<SingleMockup> {
       ),
       child: Column(
         spacing: 20,
-        children: [Text("Time"), Text(doubleToTimeString(widget.mockup.time))],
+        children: [
+          Common.text(data: "Time"),
+          Common.text(data: doubleToTimeString(widget.mockup.time)),
+        ],
       ),
     );
   }
@@ -179,7 +187,12 @@ class _SingleMockupState extends State<SingleMockup> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 20,
-          children: [mockup, timer(widget.mockup), exerciseWidget(widget.mockup), actions()],
+          children: [
+            mockup,
+            timer(widget.mockup),
+            exerciseWidget(widget.mockup),
+            actions(),
+          ],
         ),
       ),
     );

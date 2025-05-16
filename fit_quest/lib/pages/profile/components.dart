@@ -38,8 +38,8 @@ Widget profileTextInfo(String label, String value) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Text(label, style: TextStyle(color: Colors.grey, fontSize: 10)),
-      Text(value),
+      Common.text(data: label, color: Colors.grey, fontSize: 10),
+      Common.text(data: value),
     ],
   );
 }
@@ -59,12 +59,13 @@ Widget profileInfo(UserData userData) {
           profileTextInfo("Height", "${userData.height.toString()}cm"),
         ],
       ),
-      Common.progressBar(
-        current: userData.health[0],
-        max: userData.health[1],
-        width: 250,
-        height: 20,
-      ),
+      CustomProgressBar(current: userData.health[0], max: userData.health[1]),
+      // Expanded(
+      //   child: Common.progressBarWithText(
+      //     current: userData.health[0],
+      //     max: userData.health[1],
+      //   ),
+      // ),
     ],
   );
 }
@@ -82,61 +83,31 @@ Widget statsCard(Attribute stat) {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Text("Lvl ", style: TextStyle(color: Colors.grey)),
-            Text(stat.lvl.toString(), style: TextStyle(fontSize: 18)),
+            Common.text(data: "Lvl ", color: Colors.grey),
+            Common.text(data: stat.lvl.toString(), fontSize: 16),
           ],
         ),
-        Text(
-          stat.type.toString().split('.').last.toUpperCase(),
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        Common.text(
+          data: stat.type.toString().split('.').last.toUpperCase(),
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
         ),
-        Common.progressBar(
-          current: stat.exp[0],
-          max: stat.exp[1],
-          width: width,
-          height: 10,
-          fill: UI.primary,
-          background: Colors.grey.shade200,
-        ),
+        CustomProgressBar(current: stat.exp[0], max: stat.exp[1]),
+
+        // Expanded(
+        //   child: Common.progressBarWithText(
+        //     current: stat.exp[0],
+        //     max: stat.exp[1],
+        //     // width: width,
+        //     // height: 10,
+        //     // fill: UI.primary,
+        //     // background: Colors.grey.shade200,
+        //   ),
+        // ),
       ],
     ),
   );
 }
-// Widget statsCard(Attribute stat) {
-//   double width = 180;
-//   return Container(
-//     width: width,
-//     height: 80,
-//     padding: UI.padx(15),
-//     decoration: BoxDecoration(borderRadius: UI.borderRadius, color: UI.accent),
-//     child: Column(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Row(
-//           spacing: 5,
-//           mainAxisAlignment: MainAxisAlignment.end,
-//           children: [
-//             Text("Lvl", style: TextStyle(color: Colors.grey)),
-//             Text(stat.lvl.toString(), style: TextStyle(fontSize: 14)),
-//           ],
-//         ),
-//         Text(
-//           stat.type.name.toUpperCase().toString(),
-//           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//         ),
-//         Common.progressBar(
-//           current: stat.exp[0],
-//           max: stat.exp[1],
-//           width: width,
-//           height: 10,
-//           fill: UI.primary,
-//           background: Colors.grey.shade200,
-//           right: 40,
-//         ),
-//       ],
-//     ),
-//   );
-// }
 
 Widget badgeWidget(ProfileBadge badge) {
   Map<League, Color> colors = {
@@ -153,9 +124,10 @@ Widget badgeWidget(ProfileBadge badge) {
   return Container(
     padding: UI.padxy(10, 5),
     decoration: BoxDecoration(borderRadius: UI.borderRadius, color: current),
-    child: Text(
-      badge.name,
-      style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold),
+    child: Common.text(
+      data: badge.name,
+      fontSize: 8,
+      fontWeight: FontWeight.bold,
     ),
   );
 }

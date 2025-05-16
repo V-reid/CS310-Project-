@@ -17,15 +17,8 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-List<double> getExp(int level) {
-  return [0, level * 2];
-}
-
 class _ProfilePageState extends State<ProfilePage> {
   bool edit = false;
-  // Stat(name: "Strength", lvl: 8, exp: [25, 100]),
-  // Stat(name: "Endurance", lvl: 6, exp: [40, 100]),
-  // Stat(name: "Agility", lvl: 3, exp: [90, 100]),
   // badges: [
   //   ProfileBadge(title: "Contanst Machine", league: League.bronze),
   //   ProfileBadge(title: "Silver Warrior", league: League.silver),

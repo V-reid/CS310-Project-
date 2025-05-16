@@ -29,7 +29,6 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
-    // Initialize controllers with empty values
     _nameController = TextEditingController();
     _ageController = TextEditingController();
     _weightController = TextEditingController();
@@ -38,7 +37,6 @@ class _EditProfileState extends State<EditProfile> {
 
   @override
   void dispose() {
-    // Clean up controllers
     _nameController.dispose();
     _ageController.dispose();
     _weightController.dispose();
@@ -47,7 +45,6 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   void _initializeControllers(UserData userData) {
-    // Update controller values when userData changes
     _nameController.text = userData.name;
     _ageController.text = userData.age.toString();
     _weightController.text = userData.weight.toString();
@@ -134,22 +131,24 @@ class _EditProfileState extends State<EditProfile> {
         final userData = snapshot.data!;
         _initializeControllers(userData);
 
-        return Column(
-          spacing: 20,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Edit Profile", style: TextStyle(fontSize: 24)),
-            form(userData),
-            Inputs.formButton(
-              state: _formKey.currentState,
-              backgroundColor: UI.primary,
-              onPressed: () => _updateUserData(userData),
-              text: "Save Changes",
-              textColor: Colors.white,
-            ),
-            if (error.isNotEmpty)
-              Text(error, style: TextStyle(color: Colors.red)),
-          ],
+        return Container(
+          margin: UI.padx(20),
+          child: Column(
+            spacing: 20,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Common.text(data: "Edit Profile", fontSize: 24),
+              form(userData),
+              Inputs.formButton(
+                state: _formKey.currentState,
+                backgroundColor: UI.primary,
+                onPressed: () => _updateUserData(userData),
+                text: "Save Changes",
+                textColor: Colors.white,
+              ),
+              if (error.isNotEmpty) Common.text(data: error, color: Colors.red),
+            ],
+          ),
         );
       },
     );

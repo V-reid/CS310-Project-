@@ -208,15 +208,15 @@ class _SignUpPageState extends State<SignUpPage> {
             spacing: 20,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "Start Your Journey",
-                style: TextStyle(fontSize: 24),
+              Common.text(
+                data: "Start Your Journey",
+                fontSize: 24,
                 textAlign: TextAlign.center,
               ),
               form(),
 
               actions(),
-              Text(error, style: TextStyle(color: Colors.red)),
+              Common.text(data: error, color: Colors.red),
             ],
           ),
         ),

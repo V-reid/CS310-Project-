@@ -1,3 +1,4 @@
+import 'package:fit_quest/common/common.dart';
 import 'package:flutter/material.dart';
 
 class LoadingPage extends StatelessWidget {
@@ -14,7 +15,10 @@ class LoadingPage extends StatelessWidget {
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [Text('Loading data...'), CircularProgressIndicator()],
+              children: [
+                Common.text(data: 'Loading data...'),
+                CircularProgressIndicator(),
+              ],
             ),
           ],
         ),

@@ -66,7 +66,7 @@ class HomeCard extends StatelessWidget {
             // Centered text
             common.Common.text(
               data: "$progress/$goal $unit",
-              weight: FontWeight.w100,
+              fontWeight: FontWeight.w100,
             ),
           ],
         );
@@ -74,35 +74,35 @@ class HomeCard extends StatelessWidget {
     );
   }
 
-    // return Stack(
-    //   alignment: Alignment.center,
-    //   children: [
-    //     // The background bar
-    //     Container(
-    //       height: 20,
-    //       decoration: BoxDecoration(
-    //         color: Colors.grey[300],
-    //         borderRadius: BorderRadius.circular(10),
-    //       ),
-    //     ),
-    //     // The actual progress bar aligned to the left and fills proportionally
-    //     Align(
-    //       alignment: Alignment.centerLeft, // Align the green progress bar to the left
-    //       child: Container(
-    //         height: 20,
-    //         width: percentage * cardWidth,
-    //         decoration: BoxDecoration(
-    //           color: Colors.greenAccent,
-    //           borderRadius: BorderRadius.circular(10),
-    //         ),
-    //       ),
-    //     ),
-    //     common.Common.text(
-    //       data: "$progress/$goal $unit",
-    //       weight: FontWeight.w100,
-    //     ),
-    //   ],
-    // );
+  // return Stack(
+  //   alignment: Alignment.center,
+  //   children: [
+  //     // The background bar
+  //     Container(
+  //       height: 20,
+  //       decoration: BoxDecoration(
+  //         color: Colors.grey[300],
+  //         borderRadius: BorderRadius.circular(10),
+  //       ),
+  //     ),
+  //     // The actual progress bar aligned to the left and fills proportionally
+  //     Align(
+  //       alignment: Alignment.centerLeft, // Align the green progress bar to the left
+  //       child: Container(
+  //         height: 20,
+  //         width: percentage * cardWidth,
+  //         decoration: BoxDecoration(
+  //           color: Colors.greenAccent,
+  //           borderRadius: BorderRadius.circular(10),
+  //         ),
+  //       ),
+  //     ),
+  //     common.Common.text(
+  //       data: "$progress/$goal $unit",
+  //       weight: FontWeight.w100,
+  //     ),
+  //   ],
+  // );
   // }
 
   @override
@@ -136,7 +136,7 @@ class HomeCard extends StatelessWidget {
                     Center(
                       child: common.Common.text(
                         data: conversionRate,
-                        weight: FontWeight.w100,
+                        fontWeight: FontWeight.w100,
                       ),
                     ),
                   ],
@@ -153,28 +153,29 @@ class HomeCard extends StatelessWidget {
                         children: [
                           Column(
                             children: [
-                                if (progress.length > 1)
-                                  Row(
-                                    children: [
-                                      common.Common.text(
-                                        data: label,
-                                        fontSize: 12,
-                                        weight: FontWeight.bold,
-                                      ),
-                                      SizedBox(width:15),
-                                    ]
+                              if (progress.length > 1)
+                                Row(
+                                  children: [
+                                    common.Common.text(
+                                      data: label,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    SizedBox(width: 15),
+                                  ],
                                 ),
-                            ]
+                            ],
                           ),
                           Expanded(
-                            child: progressBarWithText(progress: current, goal: goal),
+                            child: progressBarWithText(
+                              progress: current,
+                              goal: goal,
+                            ),
                           ),
                         ],
                       ),
                     );
-
                   }),
-
                 ],
               ),
             ),
@@ -184,4 +185,3 @@ class HomeCard extends StatelessWidget {
     );
   }
 }
-

@@ -1,4 +1,5 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:fit_quest/common/common.dart';
 import 'package:flutter/material.dart';
 
 class Inputs {
@@ -7,7 +8,7 @@ class Inputs {
     FormState? state,
     required void Function() onPressed,
     String text = "",
-    Color? textColor,
+    Color textColor = Colors.black,
     bool isPrimary = true,
   }) {
     ElevatedButton primary = ElevatedButton(
@@ -24,7 +25,7 @@ class Inputs {
                 onPressed();
               }
               : null,
-      child: Text(text, style: TextStyle(color: textColor)),
+      child: Common.text(data: text, color: textColor),
     );
     OutlinedButton secondary = OutlinedButton(
       style: ButtonStyle(
@@ -40,7 +41,7 @@ class Inputs {
                 onPressed();
               }
               : null,
-      child: Text(text, style: TextStyle(color: textColor)),
+      child: Common.text(data: text, color: textColor),
     );
 
     return isPrimary ? primary : secondary;
@@ -55,7 +56,7 @@ class Inputs {
           children: [
             Icon(icon),
             SizedBox(width: 8),
-            Text(text, style: TextStyle(fontSize: 12)),
+            Common.text(data: text, fontSize: 12),
           ],
         ),
       ),
@@ -114,7 +115,7 @@ class Validators {
 
     return null;
   };
-  
+
   static var positiveDouble = (value) {
     if (value == null || value.isEmpty) {
       return 'This field is required';
