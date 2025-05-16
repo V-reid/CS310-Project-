@@ -5,7 +5,8 @@ import 'package:fit_quest/pages/mockup/mockupPage.dart';
 import 'package:flutter/material.dart';
 
 class SingleMockup extends StatefulWidget {
-  const SingleMockup({Key? key}) : super(key: key);
+  final MockupCard mockup;
+  const SingleMockup({Key? key, required this.mockup}) : super(key: key);
 
   @override
   _SingleMockupState createState() => _SingleMockupState();
@@ -65,7 +66,7 @@ class _SingleMockupState extends State<SingleMockup> {
       ),
       child: Column(
         spacing: 20,
-        children: [Text("Plan"), ...getExercise(mockup)],
+        children: [Text("Plan"), ...getExercise(widget.mockup)],
       ),
     );
   }
@@ -80,7 +81,7 @@ class _SingleMockupState extends State<SingleMockup> {
       ),
       child: Column(
         spacing: 20,
-        children: [Text("Redwars"), ...getRewards(mockup)],
+        children: [Text("Redwars"), ...getRewards(widget.mockup)],
       ),
     );
   }
@@ -114,7 +115,7 @@ class _SingleMockupState extends State<SingleMockup> {
               : [
                 ElevatedButton(
                   onPressed:
-                      () => Navigator.pushReplacementNamed(context, "/mockup"),
+                      () => Navigator.pop(context),
                   child: Icon(Icons.arrow_back),
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all<Color>(UI.accent),
@@ -144,7 +145,7 @@ class _SingleMockupState extends State<SingleMockup> {
       ),
       child: Column(
         spacing: 20,
-        children: [Text("Time"), Text(doubleToTimeString(mockup.time))],
+        children: [Text("Time"), Text(doubleToTimeString(widget.mockup.time))],
       ),
     );
   }
@@ -152,7 +153,7 @@ class _SingleMockupState extends State<SingleMockup> {
   Widget notBegin(MockupCard mockup) {
     return pageLayer(
       context: context,
-      pageName: mockup.name,
+      pageName: widget.mockup.name,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -160,8 +161,8 @@ class _SingleMockupState extends State<SingleMockup> {
           spacing: 20,
           children: [
             mockup,
-            exerciseWidget(mockup),
-            rewardsWidget(mockup),
+            exerciseWidget(widget.mockup),
+            rewardsWidget(widget.mockup),
             actions(),
           ],
         ),
@@ -172,13 +173,13 @@ class _SingleMockupState extends State<SingleMockup> {
   Widget beginPage(MockupCard mockup) {
     return pageLayer(
       context: context,
-      pageName: mockup.name,
+      pageName: widget.mockup.name,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           spacing: 20,
-          children: [mockup, timer(mockup), exerciseWidget(mockup), actions()],
+          children: [mockup, timer(widget.mockup), exerciseWidget(widget.mockup), actions()],
         ),
       ),
     );
@@ -186,10 +187,10 @@ class _SingleMockupState extends State<SingleMockup> {
 
   @override
   Widget build(BuildContext context) {
-    int index = ModalRoute.of(context)?.settings.arguments as int;
-    MockupCard mockup = mockups[index];
+    // int index = ModalRoute.of(context)?.settings.arguments as int;
+    // MockupCard mockup = mockups[index];
 
-    return begin ? beginPage(mockup) : notBegin(mockup);
+    return begin ? beginPage(widget.mockup) : notBegin(widget.mockup);
   }
 }
 

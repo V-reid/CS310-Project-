@@ -1,4 +1,5 @@
 import 'package:fit_quest/common/layer.dart';
+import 'package:fit_quest/pages/mockup/singleMockup.dart';
 import 'package:flutter/material.dart';
 
 import '../../common/common.dart';
@@ -50,6 +51,7 @@ class MockupPage extends StatefulWidget {
   State<MockupPage> createState() => _MockupPageState();
 }
 
+
 class _MockupPageState extends State<MockupPage> {
   @override
   Widget build(BuildContext context) {
@@ -66,13 +68,16 @@ class _MockupPageState extends State<MockupPage> {
                 mockups
                     .map(
                       (x) => GestureDetector(
-                        onTap:
-                            () => Navigator.pushNamed(
-                              context,
-                              "/mockup/single",
-                              arguments: mockups.indexOf(x),
-                            ),
-                        child: x,
+                        onTap: () {
+                          final int index = mockups.indexOf(x);
+                          Navigator.push(context, 
+                          MaterialPageRoute(builder: (context) => SingleMockup(mockup: x)));
+                        },
+                        //     () => Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(builder: (context) => const SingleMockup()),    
+                        //     ),
+                         child: x,
                       ),
                     )
                     .toList(),
