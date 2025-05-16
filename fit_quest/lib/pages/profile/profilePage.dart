@@ -3,6 +3,7 @@ import 'package:fit_quest/common/layer.dart';
 import 'package:fit_quest/model/user.dart';
 import 'package:fit_quest/pages/errorPage.dart';
 import 'package:fit_quest/pages/loadingPage.dart';
+import 'package:fit_quest/pages/profile/EditProfile.dart';
 import 'package:fit_quest/pages/profile/components.dart';
 import 'package:fit_quest/services/auth.dart';
 import 'package:fit_quest/services/database.dart';
@@ -95,9 +96,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                 child: Common.title(data: "No attributes"),
                               )
                               : Common.Grid<Attribute>(
-                                items: userData.attributes,
+                                items: userData.attributes.values.toList(),
                                 toElement: (x) => statsCard(x),
                               ),
+
+                          // _buildAttributesGrid(userData),
                           Common.sectionName(title: "Badges", flexs: [0, 2, 5]),
                           userData.badges.isEmpty
                               ? Center(child: Common.title(data: "No Badges"))
@@ -110,7 +113,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     )
                     : EditProfile(
-                      
                       changeEdit:
                           () => setState(() {
                             edit = false;

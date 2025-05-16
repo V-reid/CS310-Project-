@@ -35,20 +35,22 @@ class _SignUpPageState extends State<SignUpPage> {
           backgroundColor: UI.primary,
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
-              dynamic result = await _auth.register(
-                email,
-                password,
-                name,
-                age,
-                weight,
-                height,
-              );
-              if (result == null) {
+              try {
+                dynamic result = await _auth.register(
+                  email,
+                  password,
+                  name,
+                  age,
+                  weight,
+                  height,
+                );
+                if (result != null) {
+                  print('Success');
+                }
+              } catch (e) {
                 setState(() {
-                  error = '500 server error';
+                  error = e.toString();
                 });
-              } else {
-                print('Success');
               }
             }
           },
@@ -183,7 +185,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     });
                   },
                   style: TextStyle(fontSize: 12),
-                  decoration: Inputs.inputDecoration("Height (cm)", Icons.height),
+                  decoration: Inputs.inputDecoration(
+                    "Height (cm)",
+                    Icons.height,
+                  ),
                 ),
               ),
             ],

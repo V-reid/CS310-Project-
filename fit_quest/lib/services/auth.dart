@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_quest/model/user.dart';
 import 'package:fit_quest/services/database.dart';
+import 'package:flutter/material.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -10,9 +11,7 @@ class AuthService {
   }
 
   Stream<FitUser?> get user {
-    return _auth.authStateChanges().map(
-      (User? user) => userToFitUser(user),
-    );
+    return _auth.authStateChanges().map((User? user) => userToFitUser(user));
   }
 
   Future signIn(String email, String password) async {
@@ -37,25 +36,20 @@ class AuthService {
     double weight,
     double height,
   ) async {
-    try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      User? user = result.user;
-      UserData userData = UserData(
-        uid: user!.uid,
-        name: name,
-        age: age,
-        weight: weight,
-        height: height,
-      );
-      await DatabaseService(uid: user!.uid).updateUserData(userData);
-      return userToFitUser(user);
-    } catch (e) {
-      print(e.toString());
-      return null;
-    }
+    UserCredential result = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    User? user = result.user;
+    UserData userData = UserData(
+      uid: user!.uid,
+      name: name,
+      age: age,
+      weight: weight,
+      height: height,
+    );
+    await DatabaseService(uid: user.uid).setUserData(userData);
+    return userToFitUser(user);
   }
 
   // sign out

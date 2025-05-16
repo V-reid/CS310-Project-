@@ -4,12 +4,14 @@ class FitUser {
   FitUser({required this.uid});
 }
 
+enum PhysicalAbility { strength, endurance, agility, flexibility, balance }
+
 class Attribute {
-  final String name;
+  final PhysicalAbility type;
   final int lvl;
   List<double> exp = List.filled(2, 0, growable: false);
 
-  Attribute({required this.name, this.lvl = 1, this.exp = const [0, 100]});
+  Attribute({required this.type, this.lvl = 1, this.exp = const [0, 100]});
 }
 
 enum League { bronze, silver, gold, platinum, diamond, legends }
@@ -31,7 +33,7 @@ class UserData {
   int lvl;
   List<double> exp = List.filled(2, 0, growable: false);
   List<double> health = List.filled(2, 0, growable: false);
-  List<Attribute> attributes;
+  Map<PhysicalAbility, Attribute> attributes;
   List<ProfileBadge> badges;
 
   UserData({
@@ -44,7 +46,21 @@ class UserData {
     this.lvl = 1,
     this.exp = const [0, 100],
     this.health = const [0, 100],
-    this.attributes = const [],
+    Map<PhysicalAbility, Attribute>? attributes,
     this.badges = const [],
-  });
+  }) : attributes =
+           attributes ??
+           {
+             PhysicalAbility.strength: Attribute(
+               type: PhysicalAbility.strength,
+             ),
+             PhysicalAbility.endurance: Attribute(
+               type: PhysicalAbility.endurance,
+             ),
+             PhysicalAbility.agility: Attribute(type: PhysicalAbility.agility),
+             PhysicalAbility.flexibility: Attribute(
+               type: PhysicalAbility.flexibility,
+             ),
+             PhysicalAbility.balance: Attribute(type: PhysicalAbility.balance),
+           };
 }
