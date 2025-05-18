@@ -39,12 +39,12 @@ class _QuestsPageState extends State<QuestsPage> {
     return pageLayer(
       context: context,
       pageName: "QUESTS",
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
-        tooltip: 'Filter',
-        backgroundColor: UI.accent,
-        child: const Icon(Icons.filter_alt),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => {},
+      //   tooltip: 'Filter',
+      //   backgroundColor: UI.accent,
+      //   child: const Icon(Icons.filter_alt),
+      // ),
       body: SingleChildScrollView(
         child: Column(
           spacing: 60,

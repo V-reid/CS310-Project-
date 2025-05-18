@@ -89,12 +89,12 @@ class _MockupPageState extends State<MockupPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => {},
-        tooltip: 'Increment',
-        backgroundColor: UI.accent,
-        child: const Icon(Icons.filter_alt),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () => {},
+      //   tooltip: 'Increment',
+      //   backgroundColor: UI.accent,
+      //   child: const Icon(Icons.filter_alt),
+      // ),
     );
   }
 }
