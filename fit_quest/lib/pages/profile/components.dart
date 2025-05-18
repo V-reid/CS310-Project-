@@ -66,6 +66,14 @@ Widget profileInfo(UserData userData) {
         height: 20,
         right: 65,
       ),
+      Common.progressBar(
+        current: userData.exp[0],
+        max: userData.exp[1],
+        width: 250,
+        height: 10,
+        right: 100,
+        fill: Colors.deepPurpleAccent,
+      ),
     ],
   );
 }

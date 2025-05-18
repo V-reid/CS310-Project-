@@ -1,4 +1,4 @@
-
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_quest/model/user.dart';
@@ -175,33 +175,42 @@ class DatabaseService {
 
       final updates = <String, dynamic>{};
       int totalLevelIncrease = 0;
+      double totExp = 0;
 
       attributeUpdates.forEach((ability, expToAdd) async {
-        final currentAttribute =
-            userData.attributes[ability] ??
-            Attribute(type: ability, lvl: 1, exp: [0.0, 100.0]);
+        if (userData.attributes[ability] != null) {
+          final currentAttribute = userData.attributes[ability]!;
 
-       
-        double newCurrentExp = currentAttribute.exp[0] + expToAdd;
-        int levelsGained = 0;
+          double newCurrentExp = currentAttribute.exp[0] + expToAdd;
+          userData.exp[0] += expToAdd;
+          int levelsGained = 0;
 
-        while (newCurrentExp >= currentAttribute.exp[1]) {
-          newCurrentExp -= currentAttribute.exp[1];
-          levelsGained++;
-          currentAttribute.exp[1] *= 1.2;
+          while (newCurrentExp >= currentAttribute.exp[1]) {
+            newCurrentExp -= currentAttribute.exp[1];
+            levelsGained++;
+            currentAttribute.exp[1] =
+                100 * pow(1.2, currentAttribute.lvl).toDouble();
+          }
+
+          updates['attributes.${ability.name}'] = {
+            'type': ability.name,
+            'lvl': currentAttribute.lvl + levelsGained,
+            'exp': [newCurrentExp, currentAttribute.exp[1]],
+          };
         }
-
-      
-        updates['attributes.${ability.name}'] = {
-          'type': ability.name,
-          'lvl': currentAttribute.lvl + levelsGained,
-          'exp': [newCurrentExp, currentAttribute.exp[1]],
-        };
-
-        totalLevelIncrease += levelsGained;
       });
 
+      while (userData.exp[0] > userData.exp[1]) {
+        userData.exp[0] -= userData.exp[1];
+        totalLevelIncrease++;
+        userData.exp[1] = 100 * pow(1.5, userData.lvl).toDouble();
+
+        userData.health[1] = 100 * pow(1.25, userData.lvl).toDouble();
+        userData.health[0] = userData.health[1];
+      }
+      updates['exp'] = [userData.exp[0], userData.exp[1]];
       updates['lvl'] = FieldValue.increment(totalLevelIncrease);
+      updates['health'] = [userData.health[0], userData.health[1]];
 
       transaction.update(userRef, updates);
     });
