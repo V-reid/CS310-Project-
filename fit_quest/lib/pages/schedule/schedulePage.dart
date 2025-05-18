@@ -1,5 +1,6 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/layer.dart';
+import 'package:fit_quest/pages/mockup/mockupPage.dart';
 import 'package:fit_quest/pages/mockup/singleMockup.dart';
 import 'package:flutter/material.dart';
 
@@ -7,45 +8,6 @@ import 'package:fit_quest/pages/mockup/mockupCard.dart';
 import 'mockupSelectionPage.dart';
 import 'package:provider/provider.dart';
 import 'package:fit_quest/state/trainingScheduleProvider.dart';
-
-const mockups = [
-  MockupCard(
-    name: "Saitama Training",
-    time: 90,
-    level: Difficulty.hard,
-    kcalBurn: 1500,
-    image: "assets/saitama.jpg",
-    mostPopular: true,
-    exercise: {
-      "Pushup": "100",
-      "Sits-up": "100",
-      "Squats": "100",
-      "Run": "10km",
-    },
-    rewards: {"Strength": "10", "Endurance": "15"},
-  ),
-  MockupCard(
-    name: "Rocky Training",
-    time: 60.5,
-    level: Difficulty.medium,
-    kcalBurn: 500,
-    image: "assets/rocky.jpg",
-    exercise: {"jump": "3x10", "run": "4km", "triceps extension": "3x10"},
-  ),
-  MockupCard(
-    name: "Yusuf Dikec Training",
-    time: 30,
-    level: Difficulty.easy,
-    kcalBurn: 145,
-    image: "assets/yusuf.webp",
-    exercise: {
-      "Pushup": "100",
-      "Sits-up": "100",
-      "Squats": "100",
-      "Run": "10km",
-    },
-  ),
-];
 
 class SchedulePage extends StatefulWidget {
   const SchedulePage({Key? key}) : super(key: key);

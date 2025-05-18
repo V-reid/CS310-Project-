@@ -59,13 +59,13 @@ Widget profileInfo(UserData userData) {
           profileTextInfo("Height", "${userData.height.toString()}cm"),
         ],
       ),
-      CustomProgressBar(current: userData.health[0], max: userData.health[1]),
-      // Expanded(
-      //   child: Common.progressBarWithText(
-      //     current: userData.health[0],
-      //     max: userData.health[1],
-      //   ),
-      // ),
+      Common.progressBar(
+        current: userData.health[0],
+        max: userData.health[1],
+        width: 250,
+        height: 20,
+        right: 65,
+      ),
     ],
   );
 }
@@ -92,18 +92,14 @@ Widget statsCard(Attribute stat) {
           fontSize: 12,
           fontWeight: FontWeight.bold,
         ),
-        CustomProgressBar(current: stat.exp[0], max: stat.exp[1]),
-
-        // Expanded(
-        //   child: Common.progressBarWithText(
-        //     current: stat.exp[0],
-        //     max: stat.exp[1],
-        //     // width: width,
-        //     // height: 10,
-        //     // fill: UI.primary,
-        //     // background: Colors.grey.shade200,
-        //   ),
-        // ),
+        Common.progressBar(
+          current: stat.exp[0],
+          max: stat.exp[1],
+          width: width,
+          height: 10,
+          fill: UI.primary,
+          background: Colors.grey.shade200,
+        ),
       ],
     ),
   );

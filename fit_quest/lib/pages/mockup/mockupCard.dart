@@ -1,4 +1,5 @@
 import 'package:fit_quest/common/common.dart';
+import 'package:fit_quest/model/user.dart';
 import 'package:fit_quest/pages/mockup/components.dart';
 import 'package:flutter/material.dart';
 
@@ -58,7 +59,7 @@ class MockupCard extends StatelessWidget {
   final bool mostPopular;
   final String? image;
   final Map<String, String>? exercise;
-  final Map<String, String>? rewards;
+  final Map<PhysicalAbility, double>? rewards;
 
   final double width = 350;
   final double height = 125;
@@ -176,8 +177,24 @@ class MockupCard extends StatelessWidget {
     'image': image,
     'mostPopular': mostPopular,
     'exercise': exercise,
-    'rewards': rewards,
+    'rewards': rewards?.map((k, v) => MapEntry(k.name, v)),
   };
+
+  static Map<PhysicalAbility, double>? rewardsFromJson(
+    Map<String, dynamic>? json,
+  ) {
+    print(json);
+    if (json == null) return null;
+
+    return json.map<PhysicalAbility, double>((key, value) {
+      final ability = PhysicalAbility.values.firstWhere(
+        (e) => e.name.toLowerCase() == key.toLowerCase(),
+        orElse: () => throw FormatException('Invalid ability: $key'),
+      );
+
+      return MapEntry(ability, double.parse(value));
+    });
+  }
 
   static MockupCard fromJson(Map<String, dynamic> json) => MockupCard(
     name: json['name'],
@@ -187,9 +204,6 @@ class MockupCard extends StatelessWidget {
     image: json['image'],
     mostPopular: json['mostPopular'] ?? false,
     exercise: Map<String, String>.from(json['exercise']),
-    rewards:
-        json['rewards'] != null
-            ? Map<String, String>.from(json['rewards'])
-            : null,
+    rewards: rewardsFromJson(json["rewards"]),
   );
 }

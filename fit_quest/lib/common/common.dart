@@ -85,85 +85,40 @@ class Common {
     );
   }
 
-  static Widget progressBarWithText({
+  static Widget progressBar({
     required double current,
     required double max,
-    String unit = '',
+    double? width,
+    double? height,
+    Color background = UI.accent,
+    Color fill = Colors.lightGreen,
+    bool withText = true,
+    double right = 45,
   }) {
-    double percentage = (current / max).clamp(0.0, 1.0);
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double barWidth = constraints.maxWidth * percentage;
-
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            // Background bar
-            Container(
-              height: 20,
-              width: constraints.maxWidth, // match parent
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            // Green progress bar
-            Positioned(
-              left: 0,
-              child: Container(
-                height: 20,
-                width: barWidth, // dynamically calculated
-                decoration: BoxDecoration(
-                  color: Colors.greenAccent,
-                  borderRadius: BorderRadius.circular(10),
+    double perc = current / max * (width ?? 1);
+    String health = "${current.toInt()}/${max.toInt()}";
+    double minHeight = height == null || height > 16 ? 16 : height;
+    return Container(
+      decoration: BoxDecoration(borderRadius: UI.borderRadius),
+      clipBehavior: Clip.hardEdge,
+      child: Stack(
+        children: [
+          Container(width: width, height: height, color: background),
+          Container(width: perc, height: height, color: fill),
+          withText
+              ? Positioned(
+                right: right,
+                child: Common.text(
+                  data: health,
+                  fontSize: minHeight,
+                  textAlign: TextAlign.center,
                 ),
-              ),
-            ),
-            // Centered text
-            Common.text(
-              data: "$current/$max $unit",
-              fontWeight: FontWeight.w100,
-            ),
-          ],
-        );
-      },
+              )
+              : Container(),
+        ],
+      ),
     );
   }
-  // static Widget progressBar({
-  //   required double current,
-  //   required double max,
-  //   double? width,
-  //   double? height,
-  //   Color background = UI.accent,
-  //   Color fill = Colors.lightGreen,
-  //   bool withText = true,
-  //   double right = 45,
-  // }) {
-  //   double perc = current / max * (width ?? 1);
-  //   String health = "${current.toInt()}/${max.toInt()}";
-  //   double minHeight = height == null || height > 16 ? 16 : height;
-  //   return Container(
-  //     decoration: BoxDecoration(borderRadius: UI.borderRadius),
-  //     clipBehavior: Clip.hardEdge,
-  //     child: Stack(
-  //       children: [
-  //         Container(width: width, height: height, color: background),
-  //         Container(width: perc, height: height, color: fill),
-  //         withText
-  //             ? Positioned(
-  //               right: right,
-  //               child: Common.text(
-  //                 data: health,
-  //                 fontSize: minHeight,
-  //                 textAlign: TextAlign.center,
-  //               ),
-  //             )
-  //             : Container(),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   static Widget Grid<T>({
     required List<T> items,
@@ -272,93 +227,5 @@ class Common {
 
   static paddingContainer(Widget child) {
     return Container(padding: UI.customPadding(10), child: child);
-  }
-}
-
-class CustomProgressBar extends StatelessWidget {
-  final double current;
-  final double max;
-  final double width;
-  final double height;
-  final double radius;
-  final Color fillColor;
-  final Color backgroundColor;
-  final TextStyle? textStyle;
-  final bool showText;
-  final Widget Function(double current, double max, double percentage)?
-  textBuilder;
-
-  const CustomProgressBar({
-    super.key,
-    required this.current,
-    required this.max,
-    this.width = 200.0,
-    this.height = 20.0,
-    this.radius = 50.0,
-    this.fillColor = Colors.blue,
-    this.backgroundColor = Colors.white,
-    this.textStyle,
-    this.showText = true,
-    this.textBuilder,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final clampedValue = current.clamp(0, max).toDouble();
-    final percentage = max > 0 ? (clampedValue / max) : 0.0;
-    final text =
-        textBuilder != null
-            ? textBuilder!(clampedValue, max, percentage)
-            : _buildProgressText(clampedValue, max, percentage);
-
-    return SizedBox(
-      width: width,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: height,
-            constraints: BoxConstraints(maxWidth: width),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(radius),
-            ),
-            child: Stack(
-              children: [
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  width: width * percentage,
-                  decoration: BoxDecoration(
-                    color: fillColor,
-                    borderRadius: BorderRadius.circular(radius),
-                  ),
-                ),
-                if (showText) Positioned.fill(child: Center(child: text)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProgressText(double current, double max, double percentage) {
-    return Text(
-      '${current.toStringAsFixed(0)}/${max.toStringAsFixed(0)} ',
-      // '(${(percentage * 100).toStringAsFixed(1)}%)',
-      style:
-          textStyle ??
-          TextStyle(
-            color: _getContrastColor(fillColor),
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-          ),
-    );
-  }
-
-  Color _getContrastColor(Color color) {
-    final brightness = color.computeLuminance();
-    return brightness > 0.5 ? Colors.black : Colors.white;
   }
 }

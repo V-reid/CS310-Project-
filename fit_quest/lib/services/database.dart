@@ -1,51 +1,4 @@
-// import 'dart:convert';
 
-// import 'package:clouduserCollection/cloud_firestore.dart';
-// import 'package:fit_quest/model/user.dart';
-
-// class DatabaseService {
-//   final String uid;
-
-//   DatabaseService({required this.uid});
-
-//   final CollectionReference userCollection = FirebaseFirestore.instance
-//       .collection('user');
-
-//   Future updateUserData(UserData u) async {
-//     return await userCollection.doc(uid).set({
-//       'name': u.name,
-//       'age': u.age,
-//       'weight': u.weight,
-//       'height': u.height,
-//       "profilePic": u.profilePic,
-//       "lvl": u.lvl,
-//       "exp": u.exp,
-//       "health": u.health,
-//       "attributes": u.attributes,
-//       "badges": u.badges,
-//     });
-//   }
-
-//   UserData mapUser(DocumentSnapshot snapshot) {
-//     return UserData(
-//       uid: uid,
-//       name: snapshot['name'],
-//       age: snapshot["age"],
-//       weight: snapshot["weight"],
-//       height: snapshot["height"],
-//       profilePic: snapshot["profilePic"],
-//       lvl: snapshot["lvl"],
-//       exp: List<double>.from(snapshot.get("exp")),
-//       health: List<double>.from(snapshot.get("health")),
-//       attributes: List<Attribute>.from(snapshot.get("attributes")),
-//       badges: List<ProfileBadge>.from(snapshot.get("badges")),
-//     );
-//   }
-
-//   Stream<UserData> get userData {
-//     return userCollection.doc(uid).snapshots().map(mapUser);
-//   }
-// }
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fit_quest/model/user.dart';
@@ -209,5 +162,64 @@ class DatabaseService {
         orElse: () => League.bronze,
       ),
     );
+  }
+
+  Future<void> applyAttributeUpdates(
+    Map<PhysicalAbility, double> attributeUpdates,
+  ) async {
+    final userRef = userCollection.doc(uid);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(userRef);
+      final userData = _userDataFromMap(snapshot);
+
+      final updates = <String, dynamic>{};
+      int totalLevelIncrease = 0;
+
+      attributeUpdates.forEach((ability, expToAdd) async {
+        final currentAttribute =
+            userData.attributes[ability] ??
+            Attribute(type: ability, lvl: 1, exp: [0.0, 100.0]);
+
+       
+        double newCurrentExp = currentAttribute.exp[0] + expToAdd;
+        int levelsGained = 0;
+
+        while (newCurrentExp >= currentAttribute.exp[1]) {
+          newCurrentExp -= currentAttribute.exp[1];
+          levelsGained++;
+          currentAttribute.exp[1] *= 1.2;
+        }
+
+      
+        updates['attributes.${ability.name}'] = {
+          'type': ability.name,
+          'lvl': currentAttribute.lvl + levelsGained,
+          'exp': [newCurrentExp, currentAttribute.exp[1]],
+        };
+
+        totalLevelIncrease += levelsGained;
+      });
+
+      updates['lvl'] = FieldValue.increment(totalLevelIncrease);
+
+      transaction.update(userRef, updates);
+    });
+  }
+
+  Future<void> quickIncrementAttribute(String abilityName, double exp) async {
+    final ability = PhysicalAbility.values.firstWhere(
+      (e) => e.name.toLowerCase() == abilityName.toLowerCase(),
+      orElse: () => PhysicalAbility.strength,
+    );
+
+    await userCollection.doc(uid).update({
+      'attributes.${ability.name}.exp.0': FieldValue.increment(exp),
+      'lvl': FieldValue.increment(_calculateLevelIncrement(exp)),
+    });
+  }
+
+  int _calculateLevelIncrement(double expAdded) {
+    return (expAdded / 100).floor();
   }
 }

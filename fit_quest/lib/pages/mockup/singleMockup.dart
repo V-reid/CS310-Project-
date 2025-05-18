@@ -1,8 +1,12 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/layer.dart';
+import 'package:fit_quest/model/user.dart';
+import 'package:fit_quest/pages/mockup/Timer.dart';
 import 'package:fit_quest/pages/mockup/mockupCard.dart';
 import 'package:fit_quest/pages/mockup/mockupPage.dart';
+import 'package:fit_quest/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SingleMockup extends StatefulWidget {
   final MockupCard mockup;
@@ -45,10 +49,10 @@ List<Widget> getRewards(MockupCard mockup) {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Common.text(data: x),
+                  Common.text(data: x.name),
                   Row(
                     children: [
-                      Common.text(data: mockup.rewards?[x] ?? ""),
+                      Common.text(data: mockup.rewards?[x].toString() ?? ""),
                       Icon(Icons.arrow_upward, color: Colors.lightGreen),
                     ],
                   ),
@@ -60,7 +64,10 @@ List<Widget> getRewards(MockupCard mockup) {
 }
 
 class _SingleMockupState extends State<SingleMockup> {
-  bool begin = false;
+  bool running = false;
+  bool finished = false;
+
+  final timerKey = GlobalKey<FitTimerState>();
 
   Widget exerciseWidget(MockupCard mockup) {
     return Container(
@@ -68,6 +75,7 @@ class _SingleMockupState extends State<SingleMockup> {
       padding: UI.padxy(20, 20),
       decoration: BoxDecoration(
         color: UI.accent,
+        boxShadow: [UI.boxShadow()],
         borderRadius: UI.borderRadius,
       ),
       child: Column(
@@ -82,6 +90,7 @@ class _SingleMockupState extends State<SingleMockup> {
       width: 300,
       padding: UI.padxy(20, 20),
       decoration: BoxDecoration(
+        boxShadow: [UI.boxShadow()],
         color: UI.accent,
         borderRadius: UI.borderRadius,
       ),
@@ -92,25 +101,58 @@ class _SingleMockupState extends State<SingleMockup> {
     );
   }
 
-  Widget actions() {
+  Widget actions(MockupCard mockup) {
     return Row(
       spacing: 10,
       mainAxisAlignment: MainAxisAlignment.center,
       children:
-          begin
+          running
               ? [
-                ElevatedButton(
-                  onPressed: () => {},
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(UI.accent),
-                  ),
-                  child: Common.text(data: "Pause"),
-                ),
                 ElevatedButton(
                   onPressed:
                       () => setState(() {
-                        begin = false;
+                        running = false;
                       }),
+                  child: Icon(Icons.arrow_back),
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all<Color>(UI.accent),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // setState(() {
+                    //   running = false;
+                    // });
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Common.text(data: "Confirm"),
+                          content: Common.text(
+                            data: "did you finished '${mockup.name}'?",
+                          ),
+                          actions: [
+                            TextButton(
+                              child: Common.text(data: "Cancel"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            TextButton(
+                              child: Common.text(data: "Confirm"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                setState(() {
+                                  running = false;
+                                  finished = true;
+                                });
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
 
                   style: ButtonStyle(
                     backgroundColor: WidgetStateProperty.all<Color>(UI.primary),
@@ -129,7 +171,7 @@ class _SingleMockupState extends State<SingleMockup> {
                 ElevatedButton(
                   onPressed:
                       () => setState(() {
-                        begin = true;
+                        running = true;
                       }),
                   child: Common.text(data: "Begin", color: Colors.white),
                   style: ButtonStyle(
@@ -152,7 +194,12 @@ class _SingleMockupState extends State<SingleMockup> {
         spacing: 20,
         children: [
           Common.text(data: "Time"),
-          Common.text(data: doubleToTimeString(widget.mockup.time)),
+          // Common.text(data: doubleToTimeString(widget.mockup.time)),
+          FitTimer(
+            key: timerKey,
+            initialDuration: Duration(minutes: mockup.time.toInt()),
+            autoStart: true,
+          ),
         ],
       ),
     );
@@ -171,7 +218,7 @@ class _SingleMockupState extends State<SingleMockup> {
             mockup,
             exerciseWidget(widget.mockup),
             rewardsWidget(widget.mockup),
-            actions(),
+            actions(widget.mockup),
           ],
         ),
       ),
@@ -189,9 +236,60 @@ class _SingleMockupState extends State<SingleMockup> {
           spacing: 20,
           children: [
             mockup,
-            timer(widget.mockup),
             exerciseWidget(widget.mockup),
-            actions(),
+            timer(widget.mockup),
+            actions(widget.mockup),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget congratsPage(MockupCard mockup, BuildContext context) {
+    final user = Provider.of<FitUser?>(context);
+
+    return pageLayer(
+      context: context,
+      pageName: widget.mockup.name,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 20,
+          children: [
+            Common.title(data: "Congratulations!"),
+            Common.text(data: "you finished ${mockup.name}!"),
+            ...(mockup.rewards != null
+                ? mockup.rewards!.entries
+                    .map(
+                      (x) => Row(
+                        spacing: 5,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Common.text(data: x.key.name),
+                          Common.text(data: x.value.toString()),
+                          Icon(Icons.arrow_upward, color: Colors.lightGreen),
+                        ],
+                      ),
+                    )
+                    .toList()
+                : [Center(child: Common.text(data: "No redwards!"))]),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (user != null && mockup.rewards != null) {
+                    await DatabaseService(
+                      uid: user.uid!,
+                    ).applyAttributeUpdates(mockup.rewards!);
+                  }
+                  Navigator.of(context).pop();
+                },
+                child: Common.text(data: "Get more", color: Colors.white),
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(UI.primary),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -203,7 +301,11 @@ class _SingleMockupState extends State<SingleMockup> {
     // int index = ModalRoute.of(context)?.settings.arguments as int;
     // MockupCard mockup = mockups[index];
 
-    return begin ? beginPage(widget.mockup) : notBegin(widget.mockup);
+    return finished
+        ? congratsPage(widget.mockup, context)
+        : running
+        ? beginPage(widget.mockup)
+        : notBegin(widget.mockup);
   }
 }
 

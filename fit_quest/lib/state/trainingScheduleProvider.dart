@@ -3,46 +3,6 @@ import 'package:fit_quest/pages/mockup/mockupCard.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-
-const mockups = [
-  MockupCard(
-    name: "Saitama Training",
-    time: 90,
-    level: Difficulty.hard,
-    kcalBurn: 1500,
-    image: "assets/saitama.jpg",
-    mostPopular: true,
-    exercise: {
-      "Pushup": "100",
-      "Sits-up": "100",
-      "Squats": "100",
-      "Run": "10km",
-    },
-    rewards: {"Strength": "10", "Endurance": "15"},
-  ),
-  MockupCard(
-    name: "Rocky Training",
-    time: 60.5,
-    level: Difficulty.medium,
-    kcalBurn: 500,
-    image: "assets/rocky.jpg",
-    exercise: {"jump": "3x10", "run": "4km", "triceps extension": "3x10"},
-  ),
-  MockupCard(
-    name: "Yusuf Dikec Training",
-    time: 30,
-    level: Difficulty.easy,
-    kcalBurn: 145,
-    image: "assets/yusuf.webp",
-    exercise: {
-      "Pushup": "100",
-      "Sits-up": "100",
-      "Squats": "100",
-      "Run": "10km",
-    },
-  ),
-];
-
 class TrainingScheduleProvider with ChangeNotifier {
   final Map<int, List<MockupCard>> _trainingSchedule = {};
 
@@ -73,10 +33,10 @@ class TrainingScheduleProvider with ChangeNotifier {
 
     if (user == null) return;
 
-    final scheduleMap = _trainingSchedule.map((day, list) => MapEntry(
-      day.toString(),
-      list.map((card) => card.toJson()).toList(),
-    ));
+    final scheduleMap = _trainingSchedule.map(
+      (day, list) =>
+          MapEntry(day.toString(), list.map((card) => card.toJson()).toList()),
+    );
 
     print("Saving schedule for user: ${user.uid}");
     print(scheduleMap);
@@ -101,9 +61,14 @@ class TrainingScheduleProvider with ChangeNotifier {
     _trainingSchedule.clear();
     (data['schedule'] as Map<String, dynamic>).forEach((key, value) {
       final int day = int.parse(key);
-      final cards = (value as List)
-          .map((e) => MockupCard.fromJson(Map<String, dynamic>.from(e)))
-          .toList();
+      final cards =
+          (value as List)
+              .map(
+                (e) =>
+                    MockupCard.fromJson(Map<String, dynamic>.from(e))
+                        ,
+              )
+              .toList();
       _trainingSchedule[day] = cards;
     });
 

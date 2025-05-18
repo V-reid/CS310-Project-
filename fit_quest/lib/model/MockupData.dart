@@ -8,7 +8,7 @@ class MockupData {
   final bool mostPopular;
   final String? image;
   final Map<String, String>? exercise;
-  final Map<String, String>? rewards;
+  final Map<String, double>? rewards;
 
   const MockupData({
     required this.name,

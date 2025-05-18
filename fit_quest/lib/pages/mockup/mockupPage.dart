@@ -1,4 +1,5 @@
 import 'package:fit_quest/common/layer.dart';
+import 'package:fit_quest/model/user.dart';
 import 'package:fit_quest/pages/mockup/singleMockup.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,7 @@ const mockups = [
       "Squats": "100",
       "Run": "10km",
     },
-    rewards: {"Strength": "10", "Endurance": "15"},
+    rewards: {PhysicalAbility.strength: 10, PhysicalAbility.endurance: 15},
   ),
   MockupCard(
     name: "Rocky Training",
@@ -28,6 +29,7 @@ const mockups = [
     kcalBurn: 500,
     image: "assets/rocky.jpg",
     exercise: {"jump": "3x10", "run": "4km", "tricept extensions": "3x10"},
+    rewards: {PhysicalAbility.strength: 120, PhysicalAbility.agility: 15},
   ),
   MockupCard(
     name: "Yusuf Dikec Training",
@@ -51,7 +53,6 @@ class MockupPage extends StatefulWidget {
   State<MockupPage> createState() => _MockupPageState();
 }
 
-
 class _MockupPageState extends State<MockupPage> {
   @override
   Widget build(BuildContext context) {
@@ -70,14 +71,18 @@ class _MockupPageState extends State<MockupPage> {
                       (x) => GestureDetector(
                         onTap: () {
                           final int index = mockups.indexOf(x);
-                          Navigator.push(context, 
-                          MaterialPageRoute(builder: (context) => SingleMockup(mockup: x)));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SingleMockup(mockup: x),
+                            ),
+                          );
                         },
                         //     () => Navigator.push(
                         //       context,
-                        //       MaterialPageRoute(builder: (context) => const SingleMockup()),    
+                        //       MaterialPageRoute(builder: (context) => const SingleMockup()),
                         //     ),
-                         child: x,
+                        child: x,
                       ),
                     )
                     .toList(),
