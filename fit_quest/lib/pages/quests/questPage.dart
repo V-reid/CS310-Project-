@@ -11,28 +11,28 @@ class QuestsPage extends StatefulWidget {
 }
 
 class Quest {
-  Quest({required this.text, this.image, this.goal = 0, this.current = 0});
+  Quest({required this.text, this.image, this.xp = 0, this.steps = 0});
   String text;
   String? image;
-  double goal;
-  double current;
+  double xp;
+  double steps;
 }
 
 class _QuestsPageState extends State<QuestsPage> {
   List<Quest> daily = [
-    Quest(text: "Drink water", image: "assets/rocky.jpg"),
-    Quest(text: "Walk 10k steps"),
-    Quest(text: "Complete 1 mock"),
+    Quest(text: "Drink water", image: "assets/rocky.jpg", xp: 20),
+    Quest(text: "Walk 10k steps", xp: 40, steps: 1300),
+    Quest(text: "Complete 1 mock", xp: 50),
   ];
   List<Quest> weekly = [
-    Quest(text: "Drink water"),
-    Quest(text: "Walk 10k steps"),
-    Quest(text: "Complete 1 mock"),
+    Quest(text: "Drink water", xp: 30),
+    Quest(text: "Walk 30k steps", xp: 60, steps: 3900),
+    Quest(text: "Complete 7 mock", xp: 250),
   ];
   List<Quest> monthly = [
-    Quest(text: "Drink water"),
-    Quest(text: "Walk 70k steps"),
-    Quest(text: "Complete 1 mock"),
+    Quest(text: "Drink water", xp: 50),
+    Quest(text: "Walk 70k steps", xp: 70, steps: 9100),
+    Quest(text: "Complete 15 mock", xp: 750),
   ];
   @override
   Widget build(BuildContext context) {
@@ -58,11 +58,11 @@ class _QuestsPageState extends State<QuestsPage> {
               spacing: 20,
               children: [
                 Common.sectionName(title: "Daily"),
-                ...daily.map((x) => progressQuest(quest: x)),
+                ...daily.map((x) => ProgressQuest(quest: x)),
                 Common.sectionName(title: "Weekly"),
-                ...weekly.map((x) => progressQuest(quest: x)),
+                ...weekly.map((x) => ProgressQuest(quest: x)),
                 Common.sectionName(title: "Monthly"),
-                ...monthly.map((x) => progressQuest(quest: x)),
+                ...monthly.map((x) => ProgressQuest(quest: x)),
               ],
             ),
           ],

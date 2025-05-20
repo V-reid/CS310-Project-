@@ -216,19 +216,64 @@ class DatabaseService {
     });
   }
 
-  Future<void> quickIncrementAttribute(String abilityName, double exp) async {
-    final ability = PhysicalAbility.values.firstWhere(
-      (e) => e.name.toLowerCase() == abilityName.toLowerCase(),
-      orElse: () => PhysicalAbility.strength,
-    );
+  Future<void> restoreChanges(
+    Map<PhysicalAbility, double> attributeUpdates,
+  ) async {
+    final userRef = userCollection.doc(uid);
+    int go_down = 1;
 
-    await userCollection.doc(uid).update({
-      'attributes.${ability.name}.exp.0': FieldValue.increment(exp),
-      'lvl': FieldValue.increment(_calculateLevelIncrement(exp)),
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(userRef);
+      final userData = _userDataFromMap(snapshot);
+
+      final updates = <String, dynamic>{};
+      int totalLevelDecrese= 0;
+      double totExp = 0;
+
+      attributeUpdates.forEach((ability, expToGet) async {
+        if (userData.attributes[ability] != null) {
+          final currentAttribute = userData.attributes[ability]!;
+
+          double newCurrentExp = currentAttribute.exp[0] - expToGet;
+          userData.exp[0] -= expToGet;
+          int levelsGained = 0;
+//40/100
+//lv+1
+          while (newCurrentExp + currentAttribute.exp[1] <= currentAttribute.exp[1]) {
+            double decrease = currentAttribute.exp[1] + newCurrentExp;
+            
+
+            currentAttribute.exp[1] =
+                100 * pow(1.2, currentAttribute.lvl-go_down).toDouble();
+            
+            go_down--;
+            levelsGained--;
+            
+            newCurrentExp = decrease + currentAttribute.exp[1];
+          }
+
+          updates['attributes.${ability.name}'] = {
+            'type': ability.name,
+            'lvl': currentAttribute.lvl + levelsGained,
+            'exp': [newCurrentExp, currentAttribute.exp[1]],
+          };
+        }
+      });
+
+      while (userData.exp[0] > userData.exp[1]) {
+        userData.exp[0] -= userData.exp[1];
+        totalLevelDecrese--;
+        userData.exp[1] = 100 * pow(1.5, userData.lvl).toDouble();
+
+        userData.health[1] = 100 * pow(1.25, userData.lvl).toDouble();
+        userData.health[0] = userData.health[1];
+      }
+      updates['exp'] = [userData.exp[0], userData.exp[1]];
+      updates['lvl'] = FieldValue.increment(totalLevelDecrese);
+      updates['health'] = [userData.health[0], userData.health[1]];
+
+      transaction.update(userRef, updates);
     });
   }
 
-  int _calculateLevelIncrement(double expAdded) {
-    return (expAdded / 100).floor();
-  }
 }
