@@ -75,7 +75,7 @@ class Common {
         ),
         Expanded(
           flex: flexs[1],
-          child: Center(child: Common.title(data: title, fontSize: 16)),
+          child: Center(child: Common.title(data: title, fontSize: 15)),
         ),
         Expanded(
           flex: flexs[2],

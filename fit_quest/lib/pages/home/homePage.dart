@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: SingleChildScrollView(
           child: Container(
-            padding: UI.pady(60),
+            padding: UI.pady(20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
                   userId: widget.uuid,
                 ),
 
-                SizedBox(height: 30), // spacing
+                SizedBox(height: 10), // spacing
 
                 ElevatedButton.icon(
                   onPressed: () {
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                   icon: Icon(Icons.edit),
-                  label: Text("Edit Goals"),
+                  label: Text("Edit Goals", style:TextStyle(fontFamily: "Pokemon")),
                 ),
               ],
             ),

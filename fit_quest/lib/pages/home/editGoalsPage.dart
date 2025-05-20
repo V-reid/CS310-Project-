@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fit_quest/pages/home/homePage.dart';
+import 'package:fit_quest/pages/navigationTab.dart';
 import 'package:flutter/material.dart';
+import 'package:fit_quest/common/common.dart';
 
 class EditGoalsPage extends StatefulWidget {
   final String uid;
@@ -16,19 +17,19 @@ class _EditGoalsPageState extends State<EditGoalsPage> {
   Map<String, TextEditingController> _controllers = {};
   Map<String, int> _existingTargets = {}; // 💡 Store current goal values
 
-  final List<String> _fields = [
-    'dailySteps',
-    'activeMins',
-    'dailyQuests',
-    'weeklyQuests',
-    'monthlyQuests',
-  ];
+  final Map<String, String> _fields = {
+    'Daily Steps' : 'dailySteps',
+    'Active Time' : 'activeMins',
+    'Daily Quests' : 'dailyQuests',
+    'Weekly Quests' : 'weeklyQuests',
+    'Monthly Quests' : 'monthlyQuests',
+  };
 
   @override
   void initState() {
     super.initState();
-    for (var field in _fields) {
-      _controllers[field] = TextEditingController();
+    for (var label in _fields.keys) {
+      _controllers[label] = TextEditingController();
     }
     _loadGoals();
   }
@@ -41,11 +42,11 @@ class _EditGoalsPageState extends State<EditGoalsPage> {
 
     if (doc.exists) {
       final data = doc.data()!;
-      for (var field in _fields) {
-        final target = data[field]?[1] ?? 0;
-        _existingTargets[field] = target;
-        _controllers[field]?.text = target.toString(); // Prefill UI
-      }
+      _fields.forEach((label, firestoreKey) {
+        final target = data[firestoreKey]?[1] ?? 0;
+        _existingTargets[label] = target;
+        _controllers[label]?.text = target.toString();
+      });
     }
   }
 
@@ -53,13 +54,14 @@ class _EditGoalsPageState extends State<EditGoalsPage> {
     if (_formKey.currentState!.validate()) {
       final updates = <String, List<dynamic>>{};
 
-      _controllers.forEach((field, controller) {
+      _controllers.forEach((label, controller) {
+        final firestoreKey = _fields[label]!;
         final inputText = controller.text.trim();
-        final target = inputText.isEmpty
-            ? _existingTargets[field] ?? 10000
+        final target = inputText.isEmpty 
+            ? _existingTargets[label] ?? 10000
             : int.tryParse(inputText) ?? 10000;
 
-        updates[field] = [0, target];
+        updates[firestoreKey] = [0, target];
       });
 
       await FirebaseFirestore.instance
@@ -73,36 +75,48 @@ class _EditGoalsPageState extends State<EditGoalsPage> {
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Edit Your Goals")),
+      appBar: AppBar(title: Common.text(data:"Edit Goals...")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              ..._fields.map((field) => TextFormField(
-                    controller: _controllers[field],
-                    decoration: InputDecoration(labelText: field),
+              ..._fields.keys.map((label) => Column(
+                children: [
+                  TextFormField(
+                    controller: _controllers[label],
+                    decoration: InputDecoration(
+                      labelText: label,
+                      labelStyle: TextStyle(fontFamily: "Pokemon"),
+                    ),
                     keyboardType: TextInputType.number,
-                    // validator: (val) => val == null || val.isEmpty
-                    //     ? 'Enter a value'
-                    //     : null,
-                  )),
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) return null;
+                      final parsed = int.tryParse(val.trim());
+                      if (parsed == null || parsed <= 0) return 'Enter a positive number';
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                ],
+              )),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () async{
+                onPressed: () async {
                   _saveGoals();
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => HomePage(uuid: widget.uid),
-                      ),
-                    );
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => NavigationTab(uuid: widget.uid),
+                    ),
+                  );
                 },
-                child: Text("Save"),
+                child: Text("Save", style: TextStyle(fontFamily: "Pokemon")),
               ),
             ],
           ),

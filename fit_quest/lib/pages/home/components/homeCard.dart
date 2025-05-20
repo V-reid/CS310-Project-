@@ -6,7 +6,7 @@ class HomeCard extends StatefulWidget {
   final String name;
   final Icon icon;
   final String conversionRate;
-  final String userId; // <-- identify the user whose goals we should read
+  final String userId;
   final String? goalUnit;
 
   const HomeCard({
@@ -24,7 +24,7 @@ class HomeCard extends StatefulWidget {
 
 class _HomeCardState extends State<HomeCard> {
   Map<String, List<int>> _progress = {};
-  Map<String, List<int>> _quest_progress = {};
+  Map<String, List<int>> _questProgress = {};
   late final Stream<DocumentSnapshot<Map<String, dynamic>>> _goalStream;
 
   static const Map<String, Color> _colorBackground = {
@@ -90,6 +90,33 @@ class _HomeCardState extends State<HomeCard> {
     );
   }
 
+  void _updateProgress(String label, int delta) async {
+    final isQuest = widget.name == "Quest Progress";
+    final dataMap = isQuest ? _questProgress : _progress;
+    final current = dataMap[label]?[0] ?? 0;
+    final goal = dataMap[label]?[1] ?? 1;
+
+    final newProgress = (current + delta).clamp(0, goal);
+
+    // Reverse labelMapping to get the Firestore key
+    final firestoreKey = {
+      "Today's Steps": 'dailySteps',
+      "Today's Active Time": 'activeMins',
+      "Daily  ": 'dailyQuests',
+      "Weekly ": 'weeklyQuests',
+      "Monthly": 'monthlyQuests',
+    }[label];
+
+    if (firestoreKey == null) return;
+
+    await FirebaseFirestore.instance
+        .collection('fitness_tracker_data')
+        .doc(widget.userId)
+        .update({
+      firestoreKey: [newProgress, goal],
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
@@ -121,6 +148,14 @@ class _HomeCardState extends State<HomeCard> {
           'monthlyQuests',
         ];
 
+        final Map<String, int> _incrementAmounts = {
+          "Today's Steps": 100,
+          "Today's Active Time": 5,
+          "Daily  ": 7,
+          "Weekly ": 5,
+          "Monthly": 1,
+        };
+
         // Map Firestore keys to user-friendly labels (matching your HomeCard names)
         final labelMapping = {
           'dailySteps': "Today's Steps",
@@ -132,7 +167,7 @@ class _HomeCardState extends State<HomeCard> {
         };
 
         _progress = {};
-        _quest_progress = {};
+        _questProgress = {};
 
         for (var key in allowedKeys) {
           if (data.containsKey(key)){
@@ -140,7 +175,7 @@ class _HomeCardState extends State<HomeCard> {
             if (val.length == 2){
               final label = labelMapping[key] ?? key;
               if (key.contains("Quests")){
-                _quest_progress[label] = [val[0] as int, val[1] as int];
+                _questProgress[label] = [val[0] as int, val[1] as int];
               }
               else {
                 _progress[label] = [val[0] as int, val[1] as int];
@@ -149,14 +184,12 @@ class _HomeCardState extends State<HomeCard> {
           }
         }
 
-        print(_progress);
-        print(_quest_progress);
 
-        final relevantProgress = widget.name == "Quest Progress" ? _quest_progress : _progress;
+        final relevantProgress = widget.name == "Quest Progress" ? _questProgress : _progress;
 
         return Container(
           width: 350,
-          height: 150,
+          height: 200,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             color: _colorBackground[widget.name],
@@ -174,70 +207,89 @@ class _HomeCardState extends State<HomeCard> {
                       Row(
                         children: [
                           widget.icon,
+                          // between icon and title space
                           const SizedBox(width: 5),
                           common.Common.title(data: widget.name, color: Colors.black),
                         ],
                       ),
 
-                      /// between card title and card conversion rate
-                      const SizedBox(height: 20),
-
                       /// Conversion Rate (if any)
                       if (widget.conversionRate.isNotEmpty) ...[
-                        const SizedBox(height: 8),
+                        /// between card title and card conversion rate
+                        const SizedBox(height: 35),
                         Center(
                           child: common.Common.text(
                             data: widget.conversionRate,
                             fontWeight: FontWeight.w100,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 25),
                       ],
 
                       /// between conversion rate and progress bars
-                      const SizedBox(height: 5),
+                      // const SizedBox(height: 5),
                       
 
                       /// Progress Bar(s)
                       ...relevantProgress.entries.map((entry) {
-                      final label = entry.key;
-                      final current = entry.value[0];
-                      final goal = entry.value[1];
+                        final label = entry.key;
+                        final current = entry.value[0];
+                        final goal = entry.value[1];
+                        final increment = _incrementAmounts[label] ?? 1;
 
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 5.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Produce titles next to bars
                             if (widget.name == "Quest Progress") ...[
-                              common.Common.text(
-                                data: label,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              const SizedBox(width: 15),
-                              Expanded(
-                                child: _progressBarWithText(
-                                  progress: current,
-                                  goal: goal,
-                                ),
+                              Row(
+                                children: [
+                                  common.Common.text(
+                                    data: label,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.remove, size: 18),
+                                    onPressed: () => _updateProgress(label, -increment),
+                                  ),
+                                  Flexible(
+                                    child: _progressBarWithText(
+                                      progress: current,
+                                      goal: goal,
+                                      unit: widget.goalUnit,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.add, size: 18),
+                                    onPressed: () => _updateProgress(label, increment),
+                                  ),
+                                ],
                               ),
                             ],
-
-                            if (label == widget.name)...{
-                              Expanded(
-                                child: _progressBarWithText(
-                                  progress: current,
-                                  goal: goal,
-                                ),
+                            if (label == widget.name) ...{
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.remove, size: 18),
+                                    onPressed: () => _updateProgress(label, -increment),
+                                  ),
+                                  Expanded(
+                                    child: _progressBarWithText(
+                                      progress: current,
+                                      goal: goal,
+                                      unit: widget.goalUnit,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.add, size: 18),
+                                    onPressed: () => _updateProgress(label, increment),
+                                  ),
+                                ],
                               ),
                             }
-                            
                           ],
-                        ),
-                      );
-                    }).toList(),
+                        );
+                      }).toList(),
                     ],
                   ),
                 ),
@@ -250,160 +302,3 @@ class _HomeCardState extends State<HomeCard> {
   }
 }
 
-
-
-/*
-class HomeCard extends StatelessWidget {
-  final String name;
-  final Icon icon;
-  final String conversionRate;
-  final Map<String, List<int>> progress;
-  // final int currentCount;
-  // final int goal;
-
-  final double cardWidth = 350;
-  final double cardHeight = 125;
-
-  const HomeCard({
-    super.key,
-    required this.name,
-    required this.icon,
-    required this.conversionRate,
-    required this.progress,
-    // required this.currentCount,
-    // required this.goal,
-  });
-
-  static const Map<String, Color> colorBackground = {
-    "Today's Steps": common.UI.walkCardColor,
-    "Today's Active Time": common.UI.activeTimeCardColor,
-    "Quest Progress": common.UI.questProgressCardColor,
-  };
-
-  Widget progressBarWithText({
-    required int progress,
-    required int goal,
-    String unit = '',
-  }) {
-    double percentage = (progress / goal).clamp(0.0, 1.0);
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        double barWidth = constraints.maxWidth * percentage;
-
-        return Stack(
-          alignment: Alignment.center,
-          children: [
-            // Background bar
-            Container(
-              height: 20,
-              width: constraints.maxWidth, // match parent
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            // Green progress bar
-            Positioned(
-              left: 0,
-              child: Container(
-                height: 20,
-                width: barWidth, // dynamically calculated
-                decoration: BoxDecoration(
-                  color: Colors.greenAccent,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            // Centered text
-            common.Common.text(
-              data: "$progress/$goal $unit",
-              fontWeight: FontWeight.w100,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: cardWidth,
-      height: cardHeight,
-      clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(
-        color: colorBackground[name],
-        borderRadius: common.UI.borderRadius,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: common.Common.paddingContainer(
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    children: [
-                      icon,
-                      SizedBox(width: 5), // spacer between icon and title
-                      common.Common.title(data: name, color: Colors.black),
-                    ],
-                  ),
-                  SizedBox(height: 5),
-                  if (conversionRate.isNotEmpty) ...[
-                    SizedBox(height: 8),
-                    Center(
-                      child: common.Common.text(
-                        data: conversionRate,
-                        fontWeight: FontWeight.w100,
-                      ),
-                    ),
-                  ],
-                  SizedBox(height: 10),
-                  ...progress.entries.map((entry) {
-                    final label = entry.key;
-                    final current = entry.value[0];
-                    final goal = entry.value[1];
-
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 5.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              if (progress.length > 1)
-                                Row(
-                                  children: [
-                                    common.Common.text(
-                                      data: label,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    SizedBox(width: 15),
-                                  ],
-                                ),
-                            ],
-                          ),
-                          Expanded(
-                            child: progressBarWithText(
-                              progress: current,
-                              goal: goal,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-*/
