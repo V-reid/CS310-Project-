@@ -30,8 +30,9 @@ class _ProgressQuestState extends State<ProgressQuest> {
 
         if(_isTapped){
          // db.applyAttributeUpdates(widget.quest.);
+         db.globalUpdate(widget.quest.xp);
         }else{
-          
+          db.decreaseGlobalXP(widget.quest.xp);
         }
       },
       child: Container(

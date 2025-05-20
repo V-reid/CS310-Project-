@@ -253,64 +253,129 @@ class DatabaseService {
     });
   }
 
-  Future<void> restoreChanges(
-    Map<PhysicalAbility, double> attributeUpdates,
-  ) async {
-    final userRef = userCollection.doc(uid);
-    int go_down = 1;
+  Future<void> globalUpdate(double xp)async{
+final userRef = userCollection.doc(uid);
 
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
-      final snapshot = await transaction.get(userRef);
-      final userData = _userDataFromMap(snapshot);
+  await FirebaseFirestore.instance.runTransaction((transaction) async {
+    final snapshot = await transaction.get(userRef);
+    final userData = _userDataFromMap(snapshot);
 
-      final updates = <String, dynamic>{};
-      int totalLevelDecrese= 0;
-      double totExp = 0;
+    final updates = <String, dynamic>{};
+    int totalLevelIncrease = 0;
+    
+    
+    userData.exp[0] += xp;
 
-      attributeUpdates.forEach((ability, expToGet) async {
-        if (userData.attributes[ability] != null) {
-          final currentAttribute = userData.attributes[ability]!;
+    while (userData.exp[0] >= userData.exp[1]) {
+      userData.exp[0] -= userData.exp[1];
+      totalLevelIncrease++;
+      userData.exp[1] = 100 * pow(1.5, userData.lvl + totalLevelIncrease).toDouble();
+    }
 
-          double newCurrentExp = currentAttribute.exp[0] - expToGet;
-          userData.exp[0] -= expToGet;
-          int levelsGained = 0;
-//40/100
-//lv+1
-          while (newCurrentExp + currentAttribute.exp[1] <= currentAttribute.exp[1]) {
-            double decrease = currentAttribute.exp[1] + newCurrentExp;
-            
+    if (totalLevelIncrease > 0) {
+      userData.health[1] = 100 * pow(1.25, userData.lvl + totalLevelIncrease).toDouble();
+      userData.health[0] = userData.health[1]; 
+    }
 
-            currentAttribute.exp[1] =
-                100 * pow(1.2, currentAttribute.lvl-go_down).toDouble();
-            
-            go_down--;
-            levelsGained--;
-            
-            newCurrentExp = decrease + currentAttribute.exp[1];
-          }
+    updates['exp'] = [userData.exp[0], userData.exp[1]];
+    updates['lvl'] = FieldValue.increment(totalLevelIncrease);
+    updates['health'] = [userData.health[0], userData.health[1]];
 
-          updates['attributes.${ability.name}'] = {
-            'type': ability.name,
-            'lvl': currentAttribute.lvl + levelsGained,
-            'exp': [newCurrentExp, currentAttribute.exp[1]],
-          };
-        }
-      });
-
-      while (userData.exp[0] > userData.exp[1]) {
-        userData.exp[0] -= userData.exp[1];
-        totalLevelDecrese--;
-        userData.exp[1] = 100 * pow(1.5, userData.lvl).toDouble();
-
-        userData.health[1] = 100 * pow(1.25, userData.lvl).toDouble();
-        userData.health[0] = userData.health[1];
-      }
-      updates['exp'] = [userData.exp[0], userData.exp[1]];
-      updates['lvl'] = FieldValue.increment(totalLevelDecrese);
-      updates['health'] = [userData.health[0], userData.health[1]];
-
-      transaction.update(userRef, updates);
-    });
+    transaction.update(userRef, updates);
+  });
   }
+
+Future<void> decreaseGlobalXP(double xpToSubtract) async {
+  final userRef = userCollection.doc(uid);
+
+  await FirebaseFirestore.instance.runTransaction((transaction) async {
+    final snapshot = await transaction.get(userRef);
+    final userData = _userDataFromMap(snapshot);
+
+    final updates = <String, dynamic>{};
+    double currentExp = userData.exp[0] - xpToSubtract;
+    int newLevel = userData.lvl;
+
+    while (currentExp < 0 && newLevel > 1) {
+      newLevel--;
+      final previousLevelXP = 100 * pow(1.5, newLevel).toDouble();
+      currentExp += previousLevelXP;
+    }
+
+    if (currentExp < 0) currentExp = 0;
+
+    final newRequiredXP = 100 * pow(1.5, newLevel).toDouble();
+    final newMaxHealth = 100 * pow(1.25, newLevel).toDouble();
+    final newCurrentHealth = userData.health[0] > newMaxHealth 
+        ? newMaxHealth 
+        : userData.health[0];
+
+    
+    updates['exp'] = [currentExp, newRequiredXP];
+    updates['lvl'] = newLevel;
+    updates['health'] = [newCurrentHealth, newMaxHealth];
+
+    transaction.update(userRef, updates);
+  });
+}
+
+  // Future<void> restoreChanges(
+  //   Map<PhysicalAbility, double> attributeUpdates,
+  // ) async {
+  //   final userRef = userCollection.doc(uid);
+  //   int go_down = 1;
+
+  //   await FirebaseFirestore.instance.runTransaction((transaction) async {
+  //     final snapshot = await transaction.get(userRef);
+  //     final userData = _userDataFromMap(snapshot);
+
+  //     final updates = <String, dynamic>{};
+  //     int totalLevelDecrese= 0;
+  //     double totExp = 0;
+
+  //     attributeUpdates.forEach((ability, expToGet) async {
+  //       if (userData.attributes[ability] != null) {
+  //         final currentAttribute = userData.attributes[ability]!;
+
+  //         double newCurrentExp = currentAttribute.exp[0] - expToGet;
+  //         userData.exp[0] -= expToGet;
+  //         int levelsGained = 0;
+
+  //         while (newCurrentExp + currentAttribute.exp[1] <= currentAttribute.exp[1]) {
+  //           double decrease = currentAttribute.exp[1] + newCurrentExp;
+            
+
+  //           currentAttribute.exp[1] =
+  //               100 * pow(1.2, currentAttribute.lvl-go_down).toDouble();
+            
+  //           go_down--;
+  //           levelsGained--;
+            
+  //           newCurrentExp = decrease + currentAttribute.exp[1];
+  //         }
+
+  //         updates['attributes.${ability.name}'] = {
+  //           'type': ability.name,
+  //           'lvl': currentAttribute.lvl + levelsGained,
+  //           'exp': [newCurrentExp, currentAttribute.exp[1]],
+  //         };
+  //       }
+  //     });
+
+  //     while (userData.exp[0] > userData.exp[1]) {
+  //       userData.exp[0] -= userData.exp[1];
+  //       totalLevelDecrese--;
+  //       userData.exp[1] = 100 * pow(1.5, userData.lvl).toDouble();
+
+  //       userData.health[1] = 100 * pow(1.25, userData.lvl).toDouble();
+  //       userData.health[0] = userData.health[1];
+  //     }
+  //     updates['exp'] = [userData.exp[0], userData.exp[1]];
+  //     updates['lvl'] = FieldValue.increment(totalLevelDecrese);
+  //     updates['health'] = [userData.health[0], userData.health[1]];
+
+  //     transaction.update(userRef, updates);
+  //   });
+  // }
 
 }
