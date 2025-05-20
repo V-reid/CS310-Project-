@@ -17,6 +17,43 @@ class DatabaseService {
         .set(_userDataToMap(userData), SetOptions(merge: true));
   }
 
+  /// Future to ensure existing users have default goal numbers set for them
+  Future<void> ensureDefaultGoalsExist(String uid) async {
+    final goalsDoc = FirebaseFirestore.instance.collection('fitness_tracker_data').doc(uid);
+    final snapshot = await goalsDoc.get();
+
+    print("Snapshot exists: ${snapshot.exists}");
+    print("Snapshot data: ${snapshot.data()}");
+
+    if (!snapshot.exists) {
+      print("entered");
+        await goalsDoc.set({
+        'dailySteps': [0, 10000],
+        'activeMins': [0, 30],
+        'dailyQuests': [0, 30],
+        'weeklyQuests': [0, 10],
+        'monthlyQuests': [0, 3],
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
+
+    print("done");
+  }
+
+  /// Ensures newly registered users will have goal values
+  Future<void> setDefaultGoals() async {
+  final goalsCollection = FirebaseFirestore.instance.collection('fitness_tracker_data');
+
+  await goalsCollection.doc(uid).set({
+    'dailySteps': [0, 10000],
+    'activeMins': [0, 30],
+    'dailyQuests': [0, 30],
+    'weeklyQuests': [0, 10],
+    'monthlyQuests': [0, 3],
+    'createdAt': FieldValue.serverTimestamp(),
+  });
+}
+
   Stream<UserData> get userData {
     return userCollection.doc(uid).snapshots().map(_userDataFromMap);
   }
