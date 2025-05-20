@@ -1,6 +1,7 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/inputs.dart';
 import 'package:fit_quest/services/auth.dart';
+import 'package:fit_quest/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -35,6 +36,8 @@ class _LoginPageState extends State<LoginPage> {
                   error = 'Wrong credentials';
                 });
               } else {
+                final db = DatabaseService(uid: result.uid);
+                db.ensureDefaultGoalsExist(result.uid);
                 debugPrint('Logged in');
               }
             }

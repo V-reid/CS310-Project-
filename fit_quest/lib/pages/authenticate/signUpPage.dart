@@ -3,6 +3,7 @@ import 'package:fit_quest/common/inputs.dart';
 import 'package:fit_quest/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fit_quest/services/database.dart';
 
 class SignUpPage extends StatefulWidget {
   final Function changeView;
@@ -46,6 +47,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 );
                 if (result != null) {
                   print('Success');
+                  final db = DatabaseService(uid: result.uid);
+                  await db.ensureDefaultGoalsExist(result.uid);
                 }
               } catch (e) {
                 setState(() {
@@ -167,7 +170,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                   style: TextStyle(fontSize: 12),
                   decoration: Inputs.inputDecoration(
-                    "Weight (kg)",
+                    "Weight(kg)",
                     Icons.line_weight,
                   ),
                 ),
@@ -186,7 +189,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                   style: TextStyle(fontSize: 12),
                   decoration: Inputs.inputDecoration(
-                    "Height (cm)",
+                    "Height(cm)",
                     Icons.height,
                   ),
                 ),

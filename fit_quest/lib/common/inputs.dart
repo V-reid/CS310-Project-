@@ -55,8 +55,8 @@ class Inputs {
         child: Row(
           children: [
             Icon(icon),
-            SizedBox(width: 8),
-            Common.text(data: text, fontSize: 12),
+            SizedBox(width: 6),
+            Common.text(data: text, fontSize: 9),
           ],
         ),
       ),
