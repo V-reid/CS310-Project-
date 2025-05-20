@@ -112,6 +112,7 @@ class Common {
                   data: health,
                   fontSize: minHeight,
                   textAlign: TextAlign.center,
+                  color: Colors.black,
                 ),
               )
               : Container(),

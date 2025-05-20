@@ -45,7 +45,7 @@ class UserData {
     this.profilePic,
     this.lvl = 1,
     this.exp = const [0, 100],
-    this.health = const [0, 100],
+    this.health = const [100, 100],
     Map<PhysicalAbility, Attribute>? attributes,
     this.badges = const [],
   }) : attributes =
