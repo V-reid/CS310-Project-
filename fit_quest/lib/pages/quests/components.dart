@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/pages/quests/questPage.dart';
+import 'package:fit_quest/services/database.dart';
 import 'package:flutter/material.dart';
 
 class ProgressQuest extends StatefulWidget {
@@ -16,6 +18,7 @@ class ProgressQuest extends StatefulWidget {
 
 class _ProgressQuestState extends State<ProgressQuest> {
   bool _isTapped = false;
+  final db = DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,7 @@ class _ProgressQuestState extends State<ProgressQuest> {
         });
 
         if(_isTapped){
-
+         // db.applyAttributeUpdates(widget.quest.);
         }else{
           
         }
