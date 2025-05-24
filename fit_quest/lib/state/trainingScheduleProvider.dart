@@ -28,23 +28,37 @@ class TrainingScheduleProvider with ChangeNotifier {
   }
 
   Future<void> saveSchedule() async {
-    final db = FirebaseFirestore.instance;
-    final user = FirebaseAuth.instance.currentUser;
+  final db = FirebaseFirestore.instance;
+  final user = FirebaseAuth.instance.currentUser;
 
-    if (user == null) return;
+  if (user == null) return;
 
-    final scheduleMap = _trainingSchedule.map(
-      (day, list) =>
-          MapEntry(day.toString(), list.map((card) => card.toJson()).toList()),
-    );
+  final docRef = db.collection('schedules').doc(user.uid);
+  final doc = await docRef.get();
 
-    print("Saving schedule for user: ${user.uid}");
-    print(scheduleMap);
+  // Build the training schedule map from _trainingSchedule
+  final Map<String, List<Map<String, dynamic>>> scheduleMap =
+      _trainingSchedule.map(
+    (day, list) =>
+        MapEntry(day.toString(), list.map((card) => card.toJson()).toList()),
+  );
 
-    await db.collection('schedules').doc(user.uid).set({
-      'schedule': scheduleMap,
-    }, SetOptions(merge: true)); // merge keeps other user fields
+  // Top-level document map to save to Firestore
+  final Map<String, dynamic> dataToSave = {
+    'schedule': scheduleMap,
+  };
+
+  // Add createdAt if it's the first time
+  if (!doc.exists) {
+    dataToSave['createdAt'] = FieldValue.serverTimestamp();
   }
+
+  await docRef.set(dataToSave, SetOptions(merge: true));
+
+  print("Saving schedule for user: ${user.uid}");
+  print(dataToSave);
+}
+
 
   void updateScheduleForDay(int dayIndex, List<MockupCard> newList) {
     _trainingSchedule[dayIndex] = newList;

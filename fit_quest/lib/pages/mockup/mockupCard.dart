@@ -181,20 +181,47 @@ class MockupCard extends StatelessWidget {
   };
 
   static Map<PhysicalAbility, double>? rewardsFromJson(
-    Map<String, dynamic>? json,
-  ) {
-    print(json);
-    if (json == null) return null;
+  Map<String, dynamic>? json,
+) {
+  if (json == null) return null;
 
-    return json.map<PhysicalAbility, double>((key, value) {
-      final ability = PhysicalAbility.values.firstWhere(
-        (e) => e.name.toLowerCase() == key.toLowerCase(),
-        orElse: () => throw FormatException('Invalid ability: $key'),
-      );
+  return json.map<PhysicalAbility, double>((key, value) {
+    final ability = PhysicalAbility.values.firstWhere(
+      (e) => e.name.toLowerCase() == key.toLowerCase(),
+      orElse: () => throw FormatException('Invalid ability: $key'),
+    );
 
-      return MapEntry(ability, double.parse(value));
-    });
-  }
+    // Ensure value is double
+    double parsedValue;
+    if (value is double) {
+      parsedValue = value;
+    } else if (value is int) {
+      parsedValue = value.toDouble();
+    } else if (value is String) {
+      parsedValue = double.tryParse(value) ?? 0.0;
+    } else {
+      throw FormatException("Unsupported type for reward value: $value");
+    }
+
+    return MapEntry(ability, parsedValue);
+  });
+}
+
+  // static Map<PhysicalAbility, double>? rewardsFromJson(
+  //   Map<String, dynamic>? json,
+  // ) {
+  //   print(json);
+  //   if (json == null) return null;
+
+  //   return json.map<PhysicalAbility, double>((key, value) {
+  //     final ability = PhysicalAbility.values.firstWhere(
+  //       (e) => e.name.toLowerCase() == key.toLowerCase(),
+  //       orElse: () => throw FormatException('Invalid ability: $key'),
+  //     );
+
+  //     return MapEntry(ability, double.parse(value));
+  //   });
+  // }
 
   static MockupCard fromJson(Map<String, dynamic> json) => MockupCard(
     name: json['name'],
