@@ -49,10 +49,15 @@ class MyApp extends StatelessWidget {
                   ? StreamProvider<FitUser?>.value(
                     value: AuthService().user,
                     initialData: null,
-                    child: MaterialApp(home: Wrapper()),
+                    child: MaterialApp(
+                      home: Wrapper(),
+                      debugShowCheckedModeBanner: false,
+                    ),
                   )
-                  : MaterialApp(home: LoadingPage()),
-
+                  : MaterialApp(
+                    home: LoadingPage(),
+                    debugShowCheckedModeBanner: false,
+                  ),
     );
   }
 }

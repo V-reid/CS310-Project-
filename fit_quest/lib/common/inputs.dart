@@ -18,13 +18,10 @@ class Inputs {
                 ? WidgetStateProperty.all(backgroundColor)
                 : null,
       ),
-      onPressed:
-          state != null && state.validate()
-              ? () {
-                state.save();
-                onPressed();
-              }
-              : null,
+      onPressed: () {
+        state?.save();
+        onPressed();
+      },
       child: Common.text(data: text, color: textColor),
     );
     OutlinedButton secondary = OutlinedButton(

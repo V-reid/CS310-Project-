@@ -1,5 +1,6 @@
 import 'package:fit_quest/common/common.dart';
 import 'package:fit_quest/common/inputs.dart';
+import 'package:fit_quest/common/layer.dart';
 import 'package:fit_quest/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -106,7 +107,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 (val) => val != password ? "Not equals to password" : null,
             onChanged: (value) {
               setState(() {
-                password = value ?? '';
+                confirmPassword = value ?? '';
               });
             },
             style: TextStyle(fontSize: 12),
@@ -203,24 +204,28 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: UI.padx(40),
-        child: Center(
-          child: Column(
-            spacing: 20,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Common.text(
-                data: "Start Your Journey",
-                fontSize: 24,
-                textAlign: TextAlign.center,
-              ),
-              form(),
+    return pageLayer(
+      context: context,
+      pageName: "Sign in",
+      body: SingleChildScrollView(
+        child: Container(
+          padding: UI.padx(40),
+          child: Center(
+            child: Column(
+              spacing: 20,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Common.text(
+                  data: "Start Your Journey",
+                  fontSize: 20,
+                  textAlign: TextAlign.center,
+                ),
+                form(),
 
-              actions(),
-              Common.text(data: error, color: Colors.red),
-            ],
+                actions(),
+                Common.text(data: error, color: Colors.red),
+              ],
+            ),
           ),
         ),
       ),

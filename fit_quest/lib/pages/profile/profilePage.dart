@@ -19,14 +19,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool edit = false;
-  // badges: [
-  //   ProfileBadge(title: "Contanst Machine", league: League.bronze),
-  //   ProfileBadge(title: "Silver Warrior", league: League.silver),
-  //   ProfileBadge(title: "Gold Warrior", league: League.gold),
-  //   ProfileBadge(title: "Platinum Warrior", league: League.platinum),
-  //   ProfileBadge(title: "Diamond Warrior", league: League.diamond),
-  //   ProfileBadge(title: "Legends Warrior", league: League.legends),
-  // ],
 
   final AuthService _auth = AuthService();
 
