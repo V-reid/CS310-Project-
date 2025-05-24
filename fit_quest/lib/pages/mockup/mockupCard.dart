@@ -155,7 +155,7 @@ class MockupCard extends StatelessWidget {
                     Icon(Icons.whatshot),
                     Column(
                       children: [
-                        Common.text(data: "${kcalBurn.floor()}", fontSize: 12),
+                        Common.text(data: "${kcalBurn.floor()} ", fontSize: 12),
                         Common.text(data: "kcal", fontSize: 10),
                       ],
                     ),
